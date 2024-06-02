@@ -5,13 +5,12 @@ metadata:
     control-plane: controller-manager
     app.kubernetes.io/name: interpolator-operator
     app.kubernetes.io/managed-by: kustomize
-  name: system
+  name: interpolator-operator-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: controller-manager
-  namespace: system
   labels:
     control-plane: controller-manager
     app.kubernetes.io/name: interpolator-operator
@@ -29,7 +28,7 @@ spec:
         control-plane: controller-manager
     spec:
       imagePullSecrets:
-        - name: gitlab-registry
+      - name: regcred
       securityContext:
         runAsNonRoot: true
       containers:
