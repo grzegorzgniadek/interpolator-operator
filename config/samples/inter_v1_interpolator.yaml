@@ -1,0 +1,15 @@
+apiVersion: interpolator.io/v1
+kind: Interpolator
+metadata:
+  name: interpolator-sample
+  namespace: default
+spec:
+  inputSecret:
+  - name: testing-secret
+    namespace: default
+    key: testing
+  outputSecret:
+    - sourcekey: testing
+      value: "{{ testing }}-with-something"
+  outputSecretName: testing-output
+

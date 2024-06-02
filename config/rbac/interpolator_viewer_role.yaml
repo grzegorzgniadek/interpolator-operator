@@ -1,0 +1,23 @@
+# permissions for end users to view interpolators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: interpolator-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: interpolator-viewer-role
+rules:
+- apiGroups:
+  - interpolator.interpolator.io
+  resources:
+  - interpolators
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - interpolator.interpolator.io
+  resources:
+  - interpolators/status
+  verbs:
+  - get

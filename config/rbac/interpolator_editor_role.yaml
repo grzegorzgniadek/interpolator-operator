@@ -1,0 +1,27 @@
+# permissions for end users to edit interpolators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: interpolator-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: interpolator-editor-role
+rules:
+- apiGroups:
+  - interpolator.interpolator.io
+  resources:
+  - interpolators
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - interpolator.interpolator.io
+  resources:
+  - interpolators/status
+  verbs:
+  - get
