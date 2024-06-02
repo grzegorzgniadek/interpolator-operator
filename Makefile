@@ -86,6 +86,28 @@ build: manifests generate fmt vet ## Build manager binary.
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./cmd/main.go
 
+# Create(Helmify) config files
+HELMIFY ?= $(LOCALBIN)/helmify
+
+.PHONY: helmify
+helmify: $(HELMIFY) ## Download helmify locally if necessary.
+$(HELMIFY): $(LOCALBIN)
+	test -s $(LOCALBIN)/helmify || GOBIN=$(LOCALBIN) go install github.com/arttor/helmify/cmd/helmify@latest
+    
+helm: manifests kustomize helmify
+	$(KUSTOMIZE) build config/default | $(HELMIFY) charts/interpolator
+
+HELMDOCS ?= $(LOCALBIN)/helm-docs
+
+# Create Helm-docs in charts directory
+.PHONY: helm-docs
+helm-docs-install: $(HELMDOCS)
+$(HELMDOCS): $(LOCALBIN) ## Download helm-docs locally if necessary.
+	test -s $(LOCALBIN)/helm-docs || GOBIN=$(LOCALBIN) go install github.com/norwoodj/helm-docs/cmd/helm-docs@latest
+
+helm-docs: helm-docs-install 
+	$(HELMDOCS) --chart-search-root=charts --template-files=charts/_templates.gotmpl
+
 # If you wish to build the manager image targeting other platforms you can use the --platform flag.
 # (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
