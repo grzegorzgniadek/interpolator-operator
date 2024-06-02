@@ -70,6 +70,10 @@ spec:
                 description: Output secret array of structs
                 items:
                   properties:
+                    outputkey:
+                      description: Output  key for value, if empty the SourceKey is
+                        master
+                      type: string
                     sourcekey:
                       description: Source key for value
                       type: string

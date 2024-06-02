@@ -44,6 +44,8 @@ type InterpolatorInputSecret struct {
 type InterpolatorOutputSecret struct {
 	// Source key for value
 	SourceKey string `json:"sourcekey,omitempty"`
+	// Output  key for value, if empty the SourceKey is master
+	OutputKey string `json:"outputkey,omitempty"`
 	// Templated value of output key
 	Value string `json:"value,omitempty"`
 }

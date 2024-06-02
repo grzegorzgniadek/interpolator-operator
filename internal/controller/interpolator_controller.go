@@ -140,6 +140,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	/////////////////////////////     Interpolation logic ///////////////////////////////////////////////////////
 	FinalSecrets := make(map[string][]byte)
 	secretValues := make(map[string]string)
+
 	for i, secret := range interpolator.Spec.InputSecret {
 		secrets := v1.Secret{}
 		err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, &secrets)
@@ -155,10 +156,12 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	for _, secret := range interpolator.Spec.InputSecret {
 		// Find the corresponding NewSecret template
 		var templateValue string
+		var outputKey string
 		templateFound := false
 		for _, newSecret := range interpolator.Spec.OutputSecret {
 			if newSecret.SourceKey == secret.Key {
 				templateValue = newSecret.Value
+				outputKey = newSecret.OutputKey
 				templateFound = true
 				break
 			}
@@ -172,9 +175,11 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 				templateValue = strings.ReplaceAll(templateValue, placeholder, value)
 			}
 		}
-
+		if outputKey == "" {
+			outputKey = secret.Key
+		}
 		// Convert the final value to []byte and store it in the map
-		FinalSecrets[secret.Key] = []byte(templateValue)
+		FinalSecrets[outputKey] = []byte(templateValue)
 	}
 
 	secret := &v1.Secret{}

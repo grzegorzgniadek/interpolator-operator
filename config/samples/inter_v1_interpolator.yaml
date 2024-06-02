@@ -10,6 +10,7 @@ spec:
     key: testing
   outputSecret:
     - sourcekey: testing
+      outputkey: testing-changed
       value: "{{ testing }}-with-something"
   outputSecretName: testing-output
 
