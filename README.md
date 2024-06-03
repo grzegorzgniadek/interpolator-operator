@@ -62,3 +62,8 @@ helm upgrade --install \
      --repo https://grzegorzgniadek.github.io/interpolator-operator/ \
      --set controllerManager.manager.resources.limits.cpu=200m
 ```
+
+## Use sample resource
+```bash
+kubectl apply -f https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/inter_v1_interpolator.yaml
+```
