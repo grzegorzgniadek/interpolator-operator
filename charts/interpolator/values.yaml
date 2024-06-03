@@ -22,5 +22,4 @@ controllerManager:
   replicas: 1
   serviceAccount:
     annotations: {}
-
 kubernetesClusterDomain: cluster.local
