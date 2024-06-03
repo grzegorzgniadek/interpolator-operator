@@ -4,8 +4,8 @@ kind: Secret
 metadata:
   name:  testing-secret
   namespace: default
-stringData:
-   testing:  testing
+data:
+   testing:  dGVzdGluZw==
 type: Opaque
 ---
 apiVersion: interpolator.io/v1
