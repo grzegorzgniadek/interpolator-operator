@@ -1,4 +1,0 @@
-## Append samples of your project ##
-resources:
-- interpolator_v1_interpolator.yaml
-# +kubebuilder:scaffold:manifestskustomizesamples
