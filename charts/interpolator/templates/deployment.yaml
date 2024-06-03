@@ -43,12 +43,6 @@ spec:
           periodSeconds: 10
         resources: {{- toYaml .Values.controllerManager.manager.resources | nindent 10}}
         securityContext: {{- toYaml .Values.controllerManager.manager.containerSecurityContext | nindent 10 }}
-      {{- if .Values.controllerManager.manager.imagePullSecrets }}
-      imagePullSecrets:
-      {{- with .Values.controllerManager.manager.imagePullSecrets }}
-        {{- toYaml . | nindent 6 }}
-      {{- end }}
-      {{- end }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "interpolator.fullname" . }}-controller-manager

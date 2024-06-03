@@ -9,8 +9,8 @@ controllerManager:
         drop:
         - ALL
     image:
-      repository: registry.gitlab.ggniadekit.com/devops/container-images/controller
-      tag: latest
+      repository: ghcr.io/grzegorzgniadek/interpolator-operator
+      tag: 0.1.0
     imagePullPolicy: Always
     resources:
       limits:
@@ -19,8 +19,6 @@ controllerManager:
       requests:
         cpu: 10m
         memory: 64Mi
-    imagePullSecrets:
-    - name: gitlab-registry
   replicas: 1
   serviceAccount:
     annotations: {}
