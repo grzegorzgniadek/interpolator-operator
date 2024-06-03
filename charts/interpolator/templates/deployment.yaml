@@ -51,5 +51,5 @@ spec:
       {{- end }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: controller-manager
+      serviceAccountName: {{ include "interpolator.fullname" . }}-controller-manager
       terminationGracePeriodSeconds: 10
