@@ -67,7 +67,9 @@ const (
 
 func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
+	log.Info("Starting reconciliation for Interpolator", "NamespacedName", req.NamespacedName)
 
+	// Fetch the Interpolator instance
 	interpolator := &interpolatorv1.Interpolator{}
 	err := r.Get(ctx, req.NamespacedName, interpolator)
 	if err != nil {
@@ -84,7 +86,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	if interpolator.Status.Conditions == nil || len(interpolator.Status.Conditions) == 0 {
 		meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeDegradedInterpolator, Status: metav1.ConditionUnknown, Reason: "Reconciling", Message: "Starting reconcilation"})
 		if err := r.Status().Update(ctx, interpolator); err != nil {
-			log.Error(err, "failed to update Interpolator status")
+			log.Error(err, "Failed to update Interpolator status")
 			return ctrl.Result{}, err
 		}
 		if err := r.Get(ctx, req.NamespacedName, interpolator); err != nil {
@@ -94,43 +96,42 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	}
 
 	if !controllerutil.ContainsFinalizer(interpolator, interpolatorFinalizer) {
-		log.Info("adding finalizer to Interpolator")
+		log.Info("Adding finalizer to Interpolator")
 		if ok := controllerutil.AddFinalizer(interpolator, interpolatorFinalizer); !ok {
-			log.Error(err, "failed to add finalizer to interpolator resource")
+			log.Error(err, "Failed to add finalizer to interpolator resource")
 			return ctrl.Result{Requeue: true}, err
 		}
 		if err := r.Update(ctx, interpolator); err != nil {
-			log.Error(err, "failed to update interpolator resource to add finalizer")
+			log.Error(err, "Failed to update interpolator resource to add finalizer")
 			return ctrl.Result{}, err
 		}
 	}
-	isInterpolatorMarkedToBeDeleted := interpolator.GetDeletionTimestamp() != nil
-	if isInterpolatorMarkedToBeDeleted {
+	if interpolator.GetDeletionTimestamp() != nil {
 		if controllerutil.ContainsFinalizer(interpolator, interpolatorFinalizer) {
-			log.Info("performing finalizer operations for Interpolator before delete CR")
+			log.Info("Performing finalizer operations for Interpolator before delete CR")
 			meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeDegradedInterpolator, Status: metav1.ConditionUnknown, Reason: "Finalizing", Message: fmt.Sprintf("performing finalizer operations for custom resource %s", interpolator.Name)})
 			if err := r.Status().Update(ctx, interpolator); err != nil {
-				log.Error(err, "failed to update Interpolator status")
+				log.Error(err, "Failed to update Interpolator status")
 				return ctrl.Result{}, err
 			}
 			r.doFinalizerOperatotionsForInterpolator(interpolator)
 			if err := r.Get(ctx, req.NamespacedName, interpolator); err != nil {
-				log.Error(err, "failed to re-fetch interpolator")
+				log.Error(err, "Failed to re-fetch interpolator")
 				return ctrl.Result{}, err
 			}
 
 			meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeDegradedInterpolator, Status: metav1.ConditionTrue, Reason: "Finalizing", Message: fmt.Sprintf("finalizer operations for custom resource %s were successfully accomplished", interpolator.Name)})
 			if err := r.Status().Update(ctx, interpolator); err != nil {
-				log.Error(err, "failed to update interpolator status")
+				log.Error(err, "Failed to update interpolator status")
 				return ctrl.Result{}, err
 			}
-			log.Info("removing finalizer for Interpolator after successful performed operations")
+			log.Info("Removing finalizer for Interpolator after successful performed operations")
 			if ok := controllerutil.RemoveFinalizer(interpolator, interpolatorFinalizer); !ok {
-				log.Error(err, "failed to remove finalizer for Interpolator")
-				return ctrl.Result{Requeue: true}, nil
+				log.Error(err, "Failed to remove finalizer for Interpolator")
+				return ctrl.Result{Requeue: true}, fmt.Errorf("failed to remove finalizer")
 			}
 			if err := r.Update(ctx, interpolator); err != nil {
-				log.Error(err, "failed to remove finalizer for Interpolator")
+				log.Error(err, "Failed to remove finalizer for Interpolator")
 			}
 
 		}
@@ -141,18 +142,28 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	FinalSecrets := make(map[string][]byte)
 	secretValues := make(map[string]string)
 
+	log.Info("Fetching and processing input secrets")
 	for i, secret := range interpolator.Spec.InputSecret {
-		secrets := v1.Secret{}
-		err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, &secrets)
-		if err != nil {
-			log.Error(err, "failed to get data from secret", "name", secret.Name, "namespace", secret.Namespace)
-			return ctrl.Result{}, err
+		if secret.Type == "ConfigMap" {
+			configmaps := &v1.ConfigMap{}
+			if err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, configmaps); err != nil {
+				log.Error(err, "Failed to get data from secret", "name", secret.Name, "namespace", secret.Namespace)
+				return ctrl.Result{}, err
+			}
+			secretValues[secret.Key] = configmaps.Data[secret.Key]
+			interpolator.Spec.InputSecret[i].Value = configmaps.Data[secret.Key]
+		} else if secret.Type == "Secret" {
+			secrets := &v1.Secret{}
+			if err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, secrets); err != nil {
+				log.Error(err, "Failed to get data from secret", "name", secret.Name, "namespace", secret.Namespace)
+				return ctrl.Result{}, err
+			}
+			secretValues[secret.Key] = string(secrets.Data[secret.Key])
+			interpolator.Spec.InputSecret[i].Value = string(secrets.Data[secret.Key])
 		}
-		secretValues[secret.Key] = string(secrets.Data[secret.Key])
-		interpolator.Spec.InputSecret[i].Value = string(secrets.Data[secret.Key])
 	}
 
-	// fmt.Println(secretValues)
+	log.Info("Interpolating secrets")
 	for _, secret := range interpolator.Spec.InputSecret {
 		// Find the corresponding NewSecret template
 		var templateValue string
@@ -186,23 +197,40 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	secret, _ = r.secretForInterpolator(interpolator, FinalSecrets)
 	err = r.Create(ctx, secret)
 	if apierrors.IsAlreadyExists(err) {
-		log.Info("secret already exists", "name", secret.Name, "namespace", secret.Namespace)
-		eq := reflect.DeepEqual(secret.Data, FinalSecrets)
-		if eq {
-			log.Info("result from reflect", "data in custom resource and in output secret are not equal", eq)
-			secret.Data = FinalSecrets
-			r.Update(ctx, secret)
+		log.Info("Secret already exists", "name", secret.Name, "namespace", secret.Namespace)
+		existingSecret := &v1.Secret{}
+		if err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, existingSecret); err != nil {
+			log.Error(err, "Failed to fetch existing secret", "name", secret.Name, "namespace", secret.Namespace)
+			return ctrl.Result{}, err
+		}
+		if !reflect.DeepEqual(existingSecret.Data, FinalSecrets) {
+			existingSecret.Data = FinalSecrets
+			if err := r.Update(ctx, secret); err != nil {
+				log.Error(err, "Failed to update existing secret", "name", secret.Name, "namespace", secret.Namespace)
+				return ctrl.Result{}, err
+			}
+
 			meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Syncing", Message: "Secret not synced with newer data"})
-			r.Status().Update(ctx, interpolator)
+			if err := r.Status().Update(ctx, interpolator); err != nil {
+				log.Error(err, "Failed to update Interpolator status")
+				return ctrl.Result{}, err
+			}
 			log.Info("final secret", "status", "updated")
 		} else {
-			log.Info("result from reflect", "data in custom resource and in output secret are equal", eq)
+			log.Info("No update needed for existing secret")
 			meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "Secret synced with newer data"})
-			r.Status().Update(ctx, interpolator)
-			log.Info("final secret", "status", "synced")
+			if err := r.Status().Update(ctx, interpolator); err != nil {
+				log.Error(err, "Failed to update Interpolator status")
+				return ctrl.Result{}, err
+			}
+			log.Info("Final secret status synced")
 		}
+	} else {
+		log.Error(err, "Failed to create new secret")
+		return ctrl.Result{}, err
 	}
 
+	log.Info("Finished reconciliation for Interpolator", "NamespacedName", req.NamespacedName)
 	return ctrl.Result{}, nil
 }
 

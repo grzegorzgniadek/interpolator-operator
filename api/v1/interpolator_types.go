@@ -31,13 +31,15 @@ type InterpolatorSpec struct {
 }
 
 type InterpolatorInputSecret struct {
-	// Name of input secret
+	// Name of input resource
 	Name string `json:"name,omitempty"`
-	// Namespace of input secret
+	// Type of input resource
+	Type string `json:"type,omitempty"`
+	// Namespace of input resource
 	Namespace string `json:"namespace,omitempty"`
-	// Key of input secret
+	// Key of input resource
 	Key string `json:"key,omitempty"`
-	// Value of input secret
+	// Value of input resource
 	Value string `json:"value,omitempty"`
 }
 
