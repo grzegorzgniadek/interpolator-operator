@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   interpolator:
   - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2024-06-04T18:36:57.772173234Z"
+    description: A Helm chart for Kubernetes
+    digest: 195a1fc6bd71b99fe0a40a9e3f2ab59553ce770f3eedef31cb0ef14835502085
+    name: interpolator
+    type: application
+    urls:
+    - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.3.0/interpolator-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     appVersion: 0.2.1
     created: "2024-06-03T23:48:12.487199026Z"
     description: A Helm chart for Kubernetes
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.1.0/interpolator-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-03T23:48:12.487218512Z"
+generated: "2024-06-04T18:36:57.772197339Z"
