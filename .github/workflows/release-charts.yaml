@@ -1,6 +1,11 @@
 name: Release Charts
 
 on:
+  workflow_run:
+    workflows: ["Release Container"]
+    branches: [master]
+    types: 
+      - completed
   push:
     paths:
       - charts/**
