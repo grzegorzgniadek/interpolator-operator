@@ -6,11 +6,6 @@ on:
     branches: [master]
     types: 
       - completed
-  push:
-    paths:
-      - charts/**
-    branches:
-      - master
 
 permissions:
   contents: write
