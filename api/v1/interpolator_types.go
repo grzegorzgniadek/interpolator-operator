@@ -34,7 +34,7 @@ type InterpolatorInputSecret struct {
 	// Name of input resource
 	Name string `json:"name,omitempty"`
 	// Type of input resource
-	Type string `json:"type,omitempty"`
+	Kind string `json:"kind,omitempty"`
 	// Namespace of input resource
 	Namespace string `json:"namespace,omitempty"`
 	// Key of input resource

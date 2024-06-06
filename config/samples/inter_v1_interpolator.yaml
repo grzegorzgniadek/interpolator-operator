@@ -7,11 +7,11 @@ metadata:
 spec:
   inputSecret:
   - name: testing-cm
-    type: ConfigMap
+    kind: ConfigMap
     namespace: default
     key: username
   - name: testing-secret
-    type: Secret
+    kind: Secret
     namespace: default
     key: password
   outputSecret:

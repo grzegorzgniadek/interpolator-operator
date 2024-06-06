@@ -144,7 +144,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 	log.Info("Fetching and processing input secrets")
 	for i, secret := range interpolator.Spec.InputSecret {
-		if secret.Type == "ConfigMap" {
+		if secret.Kind == "ConfigMap" {
 			configmaps := &v1.ConfigMap{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, configmaps); err != nil {
 				log.Error(err, "Failed to get data from secret", "name", secret.Name, "namespace", secret.Namespace)
@@ -152,7 +152,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			}
 			secretValues[secret.Key] = configmaps.Data[secret.Key]
 			interpolator.Spec.InputSecret[i].Value = configmaps.Data[secret.Key]
-		} else if secret.Type == "Secret" {
+		} else if secret.Kind == "Secret" {
 			secrets := &v1.Secret{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, secrets); err != nil {
 				log.Error(err, "Failed to get data from secret", "name", secret.Name, "namespace", secret.Namespace)
