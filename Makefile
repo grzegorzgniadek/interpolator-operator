@@ -93,11 +93,11 @@ run: manifests generate fmt vet ## Run a controller from your host.
 HELMIFY ?= $(LOCALBIN)/helmify
 
 .PHONY: helmify
-helmify: $(HELMIFY) ## Download helmify locally if necessary.
+helmify-install: $(HELMIFY) ## Download helmify locally if necessary.
 $(HELMIFY): $(LOCALBIN)
 	test -s $(LOCALBIN)/helmify || GOBIN=$(LOCALBIN) go install github.com/arttor/helmify/cmd/helmify@latest
     
-helm: manifests kustomize helmify
+helmify: manifests kustomize helmify
 	$(KUSTOMIZE) build config/default | $(HELMIFY) charts/interpolator
 
 HELMDOCS ?= $(LOCALBIN)/helm-docs
@@ -110,6 +110,8 @@ $(HELMDOCS): $(LOCALBIN) ## Download helm-docs locally if necessary.
 
 helm-docs: helm-docs-install 
 	$(HELMDOCS) --chart-search-root=charts --template-files=charts/_templates.gotmpl
+
+helm: manifests kustomize helmify-install helmify helm-docs-install helm-docs
 
 # If you wish to build the manager image targeting other platforms you can use the --platform flag.
 # (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.
