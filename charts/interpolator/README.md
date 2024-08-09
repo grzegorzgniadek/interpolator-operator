@@ -9,11 +9,6 @@ Interpolator Helm Chart
 
 
 
-
-
-
-
-
 ## Values
 
 | Key | Type | Default | Description |
