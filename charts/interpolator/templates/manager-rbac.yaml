@@ -56,5 +56,5 @@ roleRef:
   name: '{{ include "interpolator.fullname" . }}-manager-role'
 subjects:
 - kind: ServiceAccount
-  name: {{ include "interpolator.fullname" . }}-controller-manager
+  name: '{{ include "interpolator.fullname" . }}-controller-manager'
   namespace: '{{ .Release.Namespace }}'

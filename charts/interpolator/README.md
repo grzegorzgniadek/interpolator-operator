@@ -23,6 +23,7 @@ Interpolator Helm Chart
 | controllerManager.manager.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | controllerManager.manager.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | controllerManager.manager.image.repository | string | `"ghcr.io/grzegorzgniadek/interpolator-operator"` |  |
+| controllerManager.manager.image.tag | string | `"0.4.3"` |  |
 | controllerManager.manager.imagePullPolicy | string | `"Always"` |  |
 | controllerManager.manager.resources.limits.cpu | string | `"200m"` |  |
 | controllerManager.manager.resources.limits.memory | string | `"128Mi"` |  |

@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: interpolator-operator
     app.kubernetes.io/managed-by: kustomize
-  name: interpolator-viewer-role
+  name: viewer-role
 rules:
 - apiGroups:
   - interpolator.interpolator.io
