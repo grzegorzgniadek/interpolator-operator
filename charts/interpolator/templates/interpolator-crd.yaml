@@ -54,16 +54,22 @@ spec:
                 items:
                   properties:
                     key:
-                      description: Key of input secret
+                      description: Key of input resource
+                      type: string
+                    kind:
+                      description: Type of input resource, Can be ConfigMap or Secret
+                      enum:
+                      - ConfigMap
+                      - Secret
                       type: string
                     name:
-                      description: Name of input secret
+                      description: Name of input resource
                       type: string
                     namespace:
-                      description: Namespace of input secret
+                      description: Namespace of input resource
                       type: string
                     value:
-                      description: Value of input secret
+                      description: Value of input resource
                       type: string
                   type: object
                 type: array

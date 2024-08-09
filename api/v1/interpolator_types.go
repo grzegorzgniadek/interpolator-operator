@@ -33,7 +33,8 @@ type InterpolatorSpec struct {
 type InterpolatorInputSecret struct {
 	// Name of input resource
 	Name string `json:"name,omitempty"`
-	// Type of input resource
+	// Type of input resource, Can be ConfigMap or Secret
+	// +kubebuilder:validation:Enum=ConfigMap;Secret
 	Kind string `json:"kind,omitempty"`
 	// Namespace of input resource
 	Namespace string `json:"namespace,omitempty"`

@@ -56,7 +56,10 @@ spec:
                       description: Key of input resource
                       type: string
                     kind:
-                      description: Type of input resource
+                      description: Type of input resource, Can be ConfigMap or Secret
+                      enum:
+                      - ConfigMap
+                      - Secret
                       type: string
                     name:
                       description: Name of input resource
