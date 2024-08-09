@@ -2,8 +2,6 @@ name: Release Container
 
 on:
   push:
-    paths:
-    - '**'
     paths-ignore:
     - 'charts/**'
     branches:
