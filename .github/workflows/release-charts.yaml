@@ -1,6 +1,9 @@
 name: Release Charts
 
 on:
+  push:
+    paths:
+    - 'charts/**'
   workflow_run:
     workflows: ["Release Container"]
     branches: [master]
