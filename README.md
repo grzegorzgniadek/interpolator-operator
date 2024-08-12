@@ -1,9 +1,9 @@
 # interpolator-operator
-
-[![Releases](https://github.com/grzegorzgniadek/interpolator-operator/actions/workflows/release.yaml/badge.svg?branch=master)](https://github.com/grzegorzgniadek/interpolator-operator/releases)
+[![Release Container](https://github.com/grzegorzgniadek/interpolator-operator/actions/workflows/release-container.yaml/badge.svg?branch=master)](https://github.com/grzegorzgniadek/interpolator-operator/releases)
+[![Release Charts](https://github.com/grzegorzgniadek/interpolator-operator/actions/workflows/release-charts.yaml/badge.svg?branch=master)](https://github.com/grzegorzgniadek/interpolator-operator/releases)
+[![Version](https://img.shields.io/github/v/tag/grzegorzgniadek/interpolator-operator?sort=semver&label=Version&color=darkgreen)](https://github.com/grzegorzgniadek/interpolator-operator/tags)
 [![Go report card](https://goreportcard.com/badge/github.com/grzegorzgniadek/interpolator-operator)](https://goreportcard.com/report/github.com/grzegorzgniadek/interpolator-operator)
 [![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/license/apache-2-0)
-
 
 interpolator-operator is a secret data interpolation system for Kubernetes.
 
