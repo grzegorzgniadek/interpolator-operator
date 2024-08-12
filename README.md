@@ -28,7 +28,7 @@ interpolator-controller-manager-669d64b6cc-md889   2m           21Mi
 
 ## Installation
 
-1. Install interpolator-operator's Helm chart from our [charts](https://grzegorzgniadek.github.io/interpolator-operator) repository:
+1. Install interpolator-operator's Helm chart from [charts](https://grzegorzgniadek.github.io/interpolator-operator) repository:
 
 ```bash
 helm upgrade --install \
