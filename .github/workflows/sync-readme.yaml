@@ -1,3 +1,5 @@
+name: Sync Readme
+
 on:
   push:
     branches:
