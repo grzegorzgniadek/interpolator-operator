@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: ghcr.io/grzegorzgniadek/interpolator-operator
-  newTag: 0.5.0-rc
+  newTag: 0.5.0-rc2
