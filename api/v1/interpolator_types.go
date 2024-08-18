@@ -22,15 +22,18 @@ import (
 
 // InterpolatorSpec defines the desired state of Interpolator
 type InterpolatorSpec struct {
-	// Output secret Name
-	OutputSecretName string `json:"outputSecretName"`
+	// Name of output resource
+	OutputName string `json:"outputName"`
+	// Type of Output resource, Can be ConfigMap or Secret
+	// +kubebuilder:validation:Enum=ConfigMap;Secret
+	OutputKind string `json:"outputKind"`
 	//Output secret array of structs
-	OutputSecret []InterpolatorOutputSecret `json:"outputSecret,omitempty"`
+	OutputSecrets []InterpolatorOutputSecrets `json:"outputSecrets,omitempty"`
 	//Input secret array of structs
-	InputSecret []InterpolatorInputSecret `json:"inputSecret"`
+	InputSecrets []InterpolatorInputSecrets `json:"inputSecrets"`
 }
 
-type InterpolatorInputSecret struct {
+type InterpolatorInputSecrets struct {
 	// Name of input resource
 	Name string `json:"name,omitempty"`
 	// Type of input resource, Can be ConfigMap or Secret
@@ -44,7 +47,7 @@ type InterpolatorInputSecret struct {
 	Value string `json:"value,omitempty"`
 }
 
-type InterpolatorOutputSecret struct {
+type InterpolatorOutputSecrets struct {
 	// Source key for value
 	SourceKey string `json:"sourcekey,omitempty"`
 	// Output  key for value, if empty the SourceKey is master
