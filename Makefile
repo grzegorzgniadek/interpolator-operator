@@ -54,6 +54,15 @@ manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and Cust
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
+kustomize-generate: 
+	TAG=$(TAG) yq -i '.images.[].newTag = strenv(TAG)' config/manager/kustomization.yaml
+
+helm-generate:
+	TAG=$(TAG) yq -i '.appVersion = strenv(TAG)' charts/interpolator/Chart.yaml
+
+.PHONY: release
+release:  manifests generate kustomize-generate helm-generate helm
+
 .PHONY: fmt
 fmt: ## Run go fmt against code.
 	go fmt ./...
