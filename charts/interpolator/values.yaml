@@ -10,7 +10,7 @@ controllerManager:
         - ALL
     image:
       repository: ghcr.io/grzegorzgniadek/interpolator-operator
-      tag: 0.5.0-rc2
+      tag: 0.5.0
     imagePullPolicy: Always
     resources:
       limits:
