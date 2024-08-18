@@ -49,7 +49,7 @@ spec:
           spec:
             description: InterpolatorSpec defines the desired state of Interpolator
             properties:
-              inputSecret:
+              inputSecrets:
                 description: Input secret array of structs
                 items:
                   properties:
@@ -73,7 +73,16 @@ spec:
                       type: string
                   type: object
                 type: array
-              outputSecret:
+              outputKind:
+                description: Type of Output resource, Can be ConfigMap or Secret
+                enum:
+                - ConfigMap
+                - Secret
+                type: string
+              outputName:
+                description: Name of output resource
+                type: string
+              outputSecrets:
                 description: Output secret array of structs
                 items:
                   properties:
@@ -89,12 +98,10 @@ spec:
                       type: string
                   type: object
                 type: array
-              outputSecretName:
-                description: Output secret Name
-                type: string
             required:
-            - inputSecret
-            - outputSecretName
+            - inputSecrets
+            - outputKind
+            - outputName
             type: object
           status:
             description: InterpolatorStatus defines the observed state of Interpolator

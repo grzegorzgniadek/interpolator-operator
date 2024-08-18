@@ -1,28 +1,4 @@
 ---
-apiVersion: interpolator.io/v1
-kind: Interpolator
-metadata:
-  name: interpolator-sample
-  namespace: default
-spec:
-  inputSecret:
-  - name: testing-cm
-    kind: ConfigMap
-    namespace: default
-    key: username
-  - name: testing-secret
-    kind: Secret
-    namespace: default
-    key: password
-  outputSecret:
-    - sourcekey: username
-      outputkey: username-rooted
-      value: "{{ username }}-with-permissions"
-    - sourcekey: password
-      outputkey: password-changed
-      value: "{{ password }}-with-something-added"
-  outputSecretName: testing-output
----
 apiVersion: v1
 kind: Secret
 metadata:
@@ -39,3 +15,53 @@ kind: ConfigMap
 metadata:
   name: testing-cm
   namespace: default
+---
+apiVersion: interpolator.io/v1
+kind: Interpolator
+metadata:
+  name: interpolator-sample
+  namespace: default
+spec:
+  inputSecrets:
+  - name: testing-cm
+    kind: ConfigMap
+    namespace: default
+    key: username
+  - name: testing-secret
+    kind: Secret
+    namespace: default
+    key: password
+  outputSecrets:
+    - sourcekey: username
+      outputkey: username-rooted
+      value: "{{ username }}-with-permissions"
+    - sourcekey: password
+      outputkey: password-changed
+      value: "{{ password }}-with-something-added"
+  outputName: testing-output
+  outputKind: ConfigMap
+---
+apiVersion: interpolator.io/v1
+kind: Interpolator
+metadata:
+  name: interpolator-sample2
+  namespace: default
+spec:
+  inputSecrets:
+  - name: testing-cm
+    kind: ConfigMap
+    namespace: default
+    key: username
+  - name: testing-secret
+    kind: Secret
+    namespace: default
+    key: password
+  outputSecrets:
+    - sourcekey: username
+      outputkey: username-rooted
+      value: "{{ username }}-with-permissions"
+    - sourcekey: password
+      outputkey: password-changed
+      value: "{{ password }}-with-something-added"
+  outputName: testing-output
+  outputKind: Secret
