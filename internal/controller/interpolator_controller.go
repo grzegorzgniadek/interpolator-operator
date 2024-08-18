@@ -64,8 +64,8 @@ const (
 	typeAvailableInterpolator = "Synced"
 	typeDegradedInterpolator  = "Degraded"
 	interpolatorFinalizer     = "interpolator.interpolator.io/finalizer"
-	interpolatorConfigMap     = "ConfigMap"
-	interpolatorSecret        = "Secret"
+	resourceTypeSecret        = "Secret"
+	resourceTypeConfigMap     = "ConfigMap"
 )
 
 func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -147,7 +147,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 	log.Info("fetching and processing input secrets")
 	for i, inputsecret := range interpolator.Spec.InputSecrets {
-		if inputsecret.Kind == interpolatorSecret {
+		if inputsecret.Kind == resourceTypeSecret {
 			secrets := &v1.Secret{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: inputsecret.Namespace, Name: inputsecret.Name}, secrets); err != nil {
 				log.Error(err, "failed to get data from secret", "name", inputsecret.Name, "namespace", inputsecret.Namespace)
@@ -155,7 +155,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			}
 			secretValues[inputsecret.Key] = string(secrets.Data[inputsecret.Key])
 			interpolator.Spec.InputSecrets[i].Value = string(secrets.Data[inputsecret.Key])
-		} else if inputsecret.Kind == interpolatorConfigMap {
+		} else if inputsecret.Kind == resourceTypeConfigMap {
 			configmaps := &v1.ConfigMap{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: inputsecret.Namespace, Name: inputsecret.Name}, configmaps); err != nil {
 				log.Error(err, "failed to get data from configmap", "name", inputsecret.Name, "namespace", inputsecret.Namespace)
@@ -193,9 +193,9 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			outputKey = secret.Key
 		}
 		// Convert the final value to []byte and store it in the map
-		if interpolator.Spec.OutputKind == "Secret" {
+		if interpolator.Spec.OutputKind == resourceTypeSecret {
 			FinalSecrets[outputKey] = []byte(templateValue)
-		} else if interpolator.Spec.OutputKind == "ConfigMap" {
+		} else if interpolator.Spec.OutputKind == resourceTypeConfigMap {
 			FinalSecretsString[outputKey] = templateValue
 		}
 	}
@@ -203,7 +203,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	secret := &v1.Secret{}
 	configmap := &v1.ConfigMap{}
 
-	if interpolator.Spec.OutputKind == "Secret" {
+	if interpolator.Spec.OutputKind == resourceTypeSecret {
 		secret, _ = r.secretForInterpolator(interpolator, FinalSecrets)
 		err = r.Create(ctx, secret)
 		if apierrors.IsAlreadyExists(err) {
@@ -239,7 +239,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			log.Error(err, "failed to create new secret")
 			return ctrl.Result{}, nil
 		}
-	} else if interpolator.Spec.OutputKind == "ConfigMap" {
+	} else if interpolator.Spec.OutputKind == resourceTypeConfigMap {
 		configmap, _ = r.configmapForInterpolator(interpolator, FinalSecretsString)
 		err = r.Create(ctx, configmap)
 		if apierrors.IsAlreadyExists(err) {
