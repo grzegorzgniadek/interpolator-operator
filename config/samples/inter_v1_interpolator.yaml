@@ -34,7 +34,7 @@ spec:
   outputSecrets:
     - sourcekey: username
       outputkey: username-rooted
-      value: "{{ username }}-with-permissionssss"
+      value: "{{ username }}-with-permissions"
     - sourcekey: password
       outputkey: password-changed
       value: "{{ password }}-with-something-added"
