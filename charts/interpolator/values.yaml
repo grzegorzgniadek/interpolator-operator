@@ -1,6 +1,7 @@
 controllerManager:
   manager:
     args:
+    - --metrics-bind-address=:8080
     - --leader-elect
     - --health-probe-bind-address=:8081
     containerSecurityContext:
@@ -10,7 +11,7 @@ controllerManager:
         - ALL
     image:
       repository: ghcr.io/grzegorzgniadek/interpolator-operator
-      tag: 0.6.0-rc
+      tag: 0.6.0-rc2
     imagePullPolicy: Always
     resources:
       limits:
