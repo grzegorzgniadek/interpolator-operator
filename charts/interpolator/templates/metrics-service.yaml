@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: {{ include "interpolator.fullname" . }}-metrics-service
   labels:
+    control-plane: controller-manager
   {{- include "interpolator.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.metricsService.type }}
