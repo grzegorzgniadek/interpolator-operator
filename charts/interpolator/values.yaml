@@ -33,3 +33,4 @@ metricsService:
   type: ClusterIP
 prometheusMonitor:
   enabled: false
+  path: /metrics

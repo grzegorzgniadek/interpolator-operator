@@ -8,7 +8,7 @@ metadata:
   {{- include "interpolator.labels" . | nindent 4 }}
 spec:
   endpoints:
-  - path: /metrics
+  - path: {{ .Values.prometheusMonitor.path }}
     port: http
     scheme: http
   selector:

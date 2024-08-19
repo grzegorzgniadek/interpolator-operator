@@ -39,3 +39,4 @@ Interpolator Helm Chart
 | metricsService.ports[0].targetPort | int | `8080` |  |
 | metricsService.type | string | `"ClusterIP"` |  |
 | prometheusMonitor.enabled | bool | `false` |  |
+| prometheusMonitor.path | string | `"/metrics"` |  |
