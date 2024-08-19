@@ -5,7 +5,7 @@ metadata:
     control-plane: controller-manager
     app.kubernetes.io/name: interpolator-operator
     app.kubernetes.io/managed-by: kustomize
-  name: interpolator-operator-system
+  name: system
 ---
 apiVersion: apps/v1
 kind: Deployment

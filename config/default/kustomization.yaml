@@ -22,17 +22,15 @@ resources:
 # [CERTMANAGER] To enable cert-manager, uncomment all sections with 'CERTMANAGER'. 'WEBHOOK' components are required.
 #- ../certmanager
 # [PROMETHEUS] To enable prometheus monitor, uncomment all sections with 'PROMETHEUS'.
-#- ../prometheus
-# [METRICS] To enable the controller manager metrics service, uncomment the following line.
-#- metrics_service.yaml
+- ../prometheus
 
 # Uncomment the patches line if you enable Metrics, and/or are using webhooks and cert-manager
-#patches:
+# patches:
 # [METRICS] The following patch will enable the metrics endpoint. Ensure that you also protect this endpoint.
 # More info: https://book.kubebuilder.io/reference/metrics
 # If you want to expose the metric endpoint of your controller-manager uncomment the following line.
-#- path: manager_metrics_patch.yaml
-#  target:
+# - path: manager_metrics_patch.yaml
+#   target:
 #    kind: Deployment
 
 # [WEBHOOK] To enable webhook, uncomment all the sections with [WEBHOOK] prefix including the one in
@@ -46,7 +44,6 @@ resources:
 
 # [CERTMANAGER] To enable cert-manager, uncomment all sections with 'CERTMANAGER' prefix.
 # Uncomment the following replacements to add the cert-manager CA injection annotations
-#replacements:
 #  - source: # Add cert-manager annotation to ValidatingWebhookConfiguration, MutatingWebhookConfiguration and CRDs
 #      kind: Certificate
 #      group: cert-manager.io
@@ -143,3 +140,19 @@ resources:
 #          delimiter: '.'
 #          index: 1
 #          create: true
+replacements:
+ - source: # Add cert-manager annotation to ValidatingWebhookConfiguration, MutatingWebhookConfiguration and CRDs
+     kind: Deployment
+     name: controller-manager # this name should match the one in certificate.yaml
+     fieldPath: .metadata.namespace # namespace of the certificate CR
+   targets:
+     - select:
+         kind: ClusterRoleBinding
+         name: manager-rolebinding
+       fieldPaths:
+         - .subjects.0.namespace
+     - select:
+         kind: RoleBinding
+         name: leader-election-rolebinding
+       fieldPaths:
+         - .subjects.0.namespace
