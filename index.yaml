@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   interpolator:
   - apiVersion: v2
+    appVersion: 0.6.0-rc4
+    created: "2024-08-19T23:20:28.647449988Z"
+    description: Interpolator Helm Chart
+    digest: d3739d5cab99464ec6bc80ac81f097599aeeba6a81cd28000fe8595d7c598ad1
+    name: interpolator
+    type: application
+    urls:
+    - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.6.0-rc4/interpolator-0.6.0-rc4.tgz
+    version: 0.6.0-rc4
+  - apiVersion: v2
     appVersion: 0.6.0-rc3
     created: "2024-08-19T20:45:55.254967759Z"
     description: Interpolator Helm Chart
@@ -171,4 +181,4 @@ entries:
     urls:
     - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.1.0/interpolator-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-19T20:45:55.255181789Z"
+generated: "2024-08-19T23:20:28.647592024Z"
