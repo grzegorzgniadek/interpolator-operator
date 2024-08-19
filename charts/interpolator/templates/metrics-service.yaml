@@ -12,9 +12,5 @@ spec:
     control-plane: controller-manager
   {{- include "interpolator.selectorLabels" . | nindent 4 }}
   ports:
-  - name: metrics
-    port: 8080
-    protocol: TCP
-    targetPort: 8080
 	{{- .Values.metricsService.ports | toYaml | nindent 2 }}
 {{- end -}}
