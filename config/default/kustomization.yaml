@@ -141,10 +141,10 @@ resources:
 #          index: 1
 #          create: true
 replacements:
- - source: # Add cert-manager annotation to ValidatingWebhookConfiguration, MutatingWebhookConfiguration and CRDs
+ - source: 
      kind: Deployment
-     name: controller-manager # this name should match the one in certificate.yaml
-     fieldPath: .metadata.namespace # namespace of the certificate CR
+     name: controller-manager 
+     fieldPath: .metadata.namespace 
    targets:
      - select:
          kind: ClusterRoleBinding
