@@ -74,6 +74,16 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 	// Fetch the Interpolator instance
 	interpolator := &interpolatorv1.Interpolator{}
+	interpolatorList := &interpolatorv1.InterpolatorList{}
+
+	if err := r.List(ctx, interpolatorList); err != nil {
+		log.Error(err, "failed to list custom resources")
+
+		return ctrl.Result{}, nil
+	}
+	count := len(interpolatorList.Items)
+	interCount.Set(float64(count))
+
 	err := r.Get(ctx, req.NamespacedName, interpolator)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
