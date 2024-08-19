@@ -4,13 +4,11 @@ kind: ServiceMonitor
 metadata:
   name: {{ include "interpolator.fullname" . }}-metrics-monitor
   labels:
-    control-plane: controller-manager
   {{- include "interpolator.labels" . | nindent 4 }}
 spec:
   endpoints:
-  - path: {{ .Values.prometheusMonitor.path }}
-    port: http
-    scheme: http
+  - interval: {{ .Values.prometheusMonitor.interval }}
+    port: metrics
   selector:
     matchLabels:
       control-plane: controller-manager

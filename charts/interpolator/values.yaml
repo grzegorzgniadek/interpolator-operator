@@ -11,7 +11,7 @@ controllerManager:
         - ALL
     image:
       repository: ghcr.io/grzegorzgniadek/interpolator-operator
-      tag: 0.6.0-rc2
+      tag: 0.6.0-rc3
     imagePullPolicy: Always
     resources:
       limits:
@@ -27,11 +27,11 @@ kubernetesClusterDomain: cluster.local
 metricsService:
   enabled: true
   ports:
-  - name: http
+  - name: metrics
     port: 8080
     protocol: TCP
     targetPort: 8080
   type: ClusterIP
 prometheusMonitor:
   enabled: false
-  path: /metrics
+  interval: 15s
