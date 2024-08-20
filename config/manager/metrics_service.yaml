@@ -5,7 +5,7 @@ metadata:
     control-plane: controller-manager
     app.kubernetes.io/name: interpolator-operator
     app.kubernetes.io/managed-by: kustomize
-  name: controller-manager-metrics-service
+  name: metrics-service
 spec:
   ports:
   - name: http
