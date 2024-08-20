@@ -1,6 +1,7 @@
 controllerManager:
   manager:
     args:
+    - --metrics-bind-address=:8080
     - --leader-elect
     - --health-probe-bind-address=:8081
     containerSecurityContext:
@@ -10,7 +11,7 @@ controllerManager:
         - ALL
     image:
       repository: ghcr.io/grzegorzgniadek/interpolator-operator
-      tag: 0.5.0
+      tag: 0.6.0
     imagePullPolicy: Always
     resources:
       limits:
@@ -23,3 +24,14 @@ controllerManager:
   serviceAccount:
     annotations: {}
 kubernetesClusterDomain: cluster.local
+metricsService:
+  enabled: true
+  ports:
+  - name: metrics
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  type: ClusterIP
+prometheusMonitor:
+  enabled: false
+  interval: 15s

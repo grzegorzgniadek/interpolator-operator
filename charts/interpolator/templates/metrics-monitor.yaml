@@ -1,0 +1,15 @@
+{{- if .Values.prometheusMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "interpolator.fullname" . }}-metrics-monitor
+  labels:
+  {{- include "interpolator.labels" . | nindent 4 }}
+spec:
+  endpoints:
+  - interval: {{ .Values.prometheusMonitor.interval }}
+    port: metrics
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+{{- end -}}
