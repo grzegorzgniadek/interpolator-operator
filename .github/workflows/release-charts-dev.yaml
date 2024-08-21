@@ -5,7 +5,7 @@ on:
     paths:
     - 'charts/**'
     branches:
-      - master
+      - dev
 
 permissions:
   contents: write
@@ -31,7 +31,7 @@ jobs:
   release:
     needs: [check-version]
     runs-on: ubuntu-latest
-    if: needs.check-version.outputs.VERSION_DEV == 'false'
+    if: needs.check-version.outputs.VERSION_DEV == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,7 +51,7 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          mark_as_latest: true
+          mark_as_latest: false
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_GENERATE_RELEASE_NOTES: true
