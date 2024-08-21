@@ -56,12 +56,25 @@ kubectl apply -f /tmp/interpolator.yaml --namespace interpolator-system
 You can see the full list of parameters (along with their meaning and default values) in the chart's [values.yaml](https://github.com/grzegorzgniadek/interpolator-operator/blob/master/charts/interpolator/values.yaml) file.
 
 
+#### Customize resources
+
 ```bash
 helm upgrade --install \
      --create-namespace --namespace interpolator-system  \
      interpolator interpolator \
      --repo https://grzegorzgniadek.github.io/interpolator-operator/ \
      --set controllerManager.manager.resources.limits.cpu=200m
+```
+
+#### Turn on Prometheus Service Monitor(Metrics)
+
+```bash
+helm install \
+     --create-namespace --namespace interpolator-system  \
+     interpolator . \
+     --set prometheusCRDS.enabled=true \
+     --set prometheusMonitor.enabled=true \
+     --set prometheusMonitor.interval=15s 
 ```
 
 ## Use sample resource
