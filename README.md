@@ -71,7 +71,8 @@ helm upgrade --install \
 ```bash
 helm install \
      --create-namespace --namespace interpolator-system  \
-     interpolator . \
+     interpolator interpolator \
+     --repo https://grzegorzgniadek.github.io/interpolator-operator/ \
      --set prometheusCRDS.enabled=true \
      --set prometheusMonitor.enabled=true \
      --set prometheusMonitor.interval=15s 
