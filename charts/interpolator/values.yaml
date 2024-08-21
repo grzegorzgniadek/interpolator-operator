@@ -32,6 +32,8 @@ metricsService:
     protocol: TCP
     targetPort: 8080
   type: ClusterIP
+prometheusCRDS:
+  enabled: false
 prometheusMonitor:
   enabled: false
   interval: 15s

@@ -5,6 +5,10 @@ metadata:
   name: {{ include "interpolator.fullname" . }}-metrics-monitor
   labels:
   {{- include "interpolator.labels" . | nindent 4 }}
+  annotations:
+  {{- if .Values.prometheusCRDS.enabled }}
+    "helm.sh/hook": post-install
+  {{- end }}
 spec:
   endpoints:
   - interval: {{ .Values.prometheusMonitor.interval }}

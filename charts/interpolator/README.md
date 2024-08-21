@@ -2,7 +2,7 @@
 
 
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0](https://img.shields.io/badge/AppVersion-0.6.0-informational?style=flat-square) 
+![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0](https://img.shields.io/badge/AppVersion-0.6.0-informational?style=flat-square) 
 
 Interpolator Helm Chart
 
@@ -12,7 +12,11 @@ Interpolator Helm Chart
 
 
 
+## Requirements
 
+| Repository | Name | Version |
+|------------|------|---------|
+| https://prometheus-community.github.io/helm-charts | prometheus-operator-crds | 14.0.* |
 
 ## Values
 
@@ -39,5 +43,6 @@ Interpolator Helm Chart
 | metricsService.ports[0].protocol | string | `"TCP"` |  |
 | metricsService.ports[0].targetPort | int | `8080` |  |
 | metricsService.type | string | `"ClusterIP"` |  |
+| prometheusCRDS.enabled | bool | `false` |  |
 | prometheusMonitor.enabled | bool | `false` |  |
 | prometheusMonitor.interval | string | `"15s"` |  |
