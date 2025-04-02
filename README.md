@@ -80,5 +80,13 @@ helm install \
 
 ## Use sample resource
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/inter_v1_interpolator.yaml
+https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/dummy-resources.yaml
+```
+If we want to create ConfigMap as result interpolated resource
+```bash
+https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/inter_v1_interpolator1-configmap.yaml
+```
+If we want to create Secret as result interpolated resource
+```bash
+https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/inter_v1_interpolator2-secret.yaml
 ```

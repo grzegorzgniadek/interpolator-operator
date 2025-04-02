@@ -61,7 +61,7 @@ helm-generate:
 	TAG=$(TAG) yq -i '.appVersion = strenv(TAG)' charts/interpolator/Chart.yaml
 
 .PHONY: release
-release:  manifests generate kustomize-generate helm-generate helm
+release:  manifests generate kustomize-generate helm-generate helm-docs
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
