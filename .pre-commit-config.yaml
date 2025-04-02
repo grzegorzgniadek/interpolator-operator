@@ -8,10 +8,6 @@ repos:
     hooks:
       - id: gofmt
       - id: helmlint
-  - repo: https://github.com/golangci/golangci-lint
-    rev: v1.59.0
-    hooks:
-      - id: golangci-lint
   - repo: https://github.com/norwoodj/helm-docs
     rev: v1.2.0
     hooks:
