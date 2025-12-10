@@ -1,6 +1,7 @@
 # Image URL to use all building/pushing image targets
 
 TAG=$(shell cat VERSION)
+HELM_CHART_VERSION=$(shell cat charts/interpolator/Chart.yaml | yq .version)
 
 IMG ?= ghcr.io/grzegorzgniadek/interpolator-operator:$(TAG)
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
@@ -59,6 +60,7 @@ kustomize-generate:
 
 helm-generate:
 	TAG=$(TAG) yq -i '.appVersion = strenv(TAG)' charts/interpolator/Chart.yaml
+	TAG=$(TAG) yq -i '.controllerManager.manager.image.tag = strenv(TAG)' charts/interpolator/values.yaml
 
 .PHONY: release
 release:  manifests generate kustomize-generate helm-generate helm-docs

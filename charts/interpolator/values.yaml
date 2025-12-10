@@ -1,17 +1,17 @@
 controllerManager:
   manager:
     args:
-    - --metrics-bind-address=:8080
-    - --leader-elect
-    - --health-probe-bind-address=:8081
+      - --metrics-bind-address=:8080
+      - --leader-elect
+      - --health-probe-bind-address=:8081
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
-        - ALL
+          - ALL
     image:
       repository: ghcr.io/grzegorzgniadek/interpolator-operator
-      tag: 0.6.0
+      tag: 0.8.0
     imagePullPolicy: Always
     resources:
       limits:
@@ -27,10 +27,10 @@ kubernetesClusterDomain: cluster.local
 metricsService:
   enabled: true
   ports:
-  - name: metrics
-    port: 8080
-    protocol: TCP
-    targetPort: 8080
+    - name: metrics
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
   type: ClusterIP
 prometheusCRDS:
   enabled: false
