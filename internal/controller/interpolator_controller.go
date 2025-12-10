@@ -17,10 +17,11 @@ limitations under the License.
 package controller
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"reflect"
-	"strings"
+	"text/template"
 
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -36,6 +37,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
+	sprig "github.com/Masterminds/sprig/v3"
 	interpolatorv1 "interpolator.io/interpolator/api/v1"
 )
 
@@ -168,13 +170,31 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 				break
 			}
 		}
-		// Replace placeholders in templateValue
+		// Replace placeholders in templateValue using text/template + sprig.
+		// We expose each key as a zero-arg template function so templates
+		// can reference keys as `{{ key }}` and also use sprig functions.
 		if !templateFound || templateValue == "" {
 			templateValue = secret.Value
 		} else {
-			for key, value := range secretValues {
-				placeholder := fmt.Sprintf("{{ %s }}", key)
-				templateValue = strings.ReplaceAll(templateValue, placeholder, value)
+			funcMap := sprig.TxtFuncMap()
+			for k, v := range secretValues {
+				vv := v
+				// expose key as function returning its value so `{{ key }}` works
+				funcMap[k] = func() string { return vv }
+			}
+
+			tmpl, err := template.New("interpolator").Funcs(funcMap).Parse(templateValue)
+			if err != nil {
+				log.Error(err, "failed to parse template", "template", templateValue)
+				templateValue = secret.Value
+			} else {
+				var buf bytes.Buffer
+				if err := tmpl.Execute(&buf, nil); err != nil {
+					log.Error(err, "failed to execute template", "template", templateValue)
+					templateValue = secret.Value
+				} else {
+					templateValue = buf.String()
+				}
 			}
 		}
 		if outputKey == "" {
