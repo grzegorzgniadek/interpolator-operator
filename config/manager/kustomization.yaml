@@ -7,4 +7,4 @@ kind: Kustomization
 images:
   - name: controller
     newName: ghcr.io/grzegorzgniadek/interpolator-operator
-    newTag: 0.9.0
+    newTag: 0.10.0

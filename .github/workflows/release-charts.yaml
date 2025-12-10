@@ -28,6 +28,7 @@ jobs:
           else
             echo "VERSION_DEV=false" >> $GITHUB_OUTPUT
           fi
+
   release:
     needs: [check-version]
     runs-on: ubuntu-latest
