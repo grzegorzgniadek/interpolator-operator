@@ -2,6 +2,21 @@ apiVersion: v1
 entries:
   interpolator:
   - apiVersion: v2
+    appVersion: 0.8.0
+    created: "2025-12-10T12:23:30.674425554Z"
+    dependencies:
+    - condition: prometheusCRDS.enabled
+      name: prometheus-operator-crds
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 14.0.*
+    description: 'feat: use texttemplate and sprig'
+    digest: a2997db65888dffe74a2d5c4374776c1eb17987f6ea66b7ee9d912177c3ba760
+    name: interpolator
+    type: application
+    urls:
+    - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.8.0/interpolator-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
     appVersion: 0.7.0
     created: "2025-04-02T01:30:43.973852637Z"
     dependencies:
@@ -231,4 +246,4 @@ entries:
     urls:
     - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.1.0/interpolator-0.1.0.tgz
     version: 0.1.0
-generated: "2025-04-02T01:30:43.973980204Z"
+generated: "2025-12-10T12:23:30.674562358Z"
