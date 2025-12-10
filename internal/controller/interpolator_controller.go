@@ -38,7 +38,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	sprig "github.com/Masterminds/sprig/v3"
-	interpolatorv1 "interpolator.io/interpolator/api/v1"
+	interpolatorv1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
 )
 
 // InterpolatorReconciler reconciles a Interpolator object

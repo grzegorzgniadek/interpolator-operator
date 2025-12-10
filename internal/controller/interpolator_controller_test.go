@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	interpolatorv1 "interpolator.io/interpolator/api/v1"
+	interpolatorv1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
 )
 
 var _ = Describe("Interpolator Controller", func() {

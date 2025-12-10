@@ -1,4 +1,4 @@
-module interpolator.io/interpolator
+module github.com/grzegorzgniadek/interpolator-operator
 
 go 1.22.0
 

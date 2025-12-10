@@ -24,7 +24,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"interpolator.io/interpolator/test/utils"
+	"github.com/grzegorzgniadek/interpolator-operator/test/utils"
 )
 
 const namespace = "interpolator-operator-system"

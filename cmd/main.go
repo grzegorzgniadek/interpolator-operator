@@ -34,8 +34,8 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	interpolatorv1 "interpolator.io/interpolator/api/v1"
-	"interpolator.io/interpolator/internal/controller"
+	interpolatorv1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
+	"github.com/grzegorzgniadek/interpolator-operator/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 

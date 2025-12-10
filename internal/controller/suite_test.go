@@ -32,7 +32,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	interpolatorv1 "interpolator.io/interpolator/api/v1"
+	interpolatorv1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
 	// +kubebuilder:scaffold:imports
 )
 

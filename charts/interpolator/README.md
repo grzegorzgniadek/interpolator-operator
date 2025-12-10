@@ -2,7 +2,7 @@
 
 
 
-![Version: 0.8.1](https://img.shields.io/badge/Version-0.8.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.8.0](https://img.shields.io/badge/AppVersion-0.8.0-informational?style=flat-square) 
+![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.0](https://img.shields.io/badge/AppVersion-0.9.0-informational?style=flat-square) 
 
 feat: use texttemplate and sprig
 
@@ -28,7 +28,7 @@ feat: use texttemplate and sprig
 | controllerManager.manager.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | controllerManager.manager.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | controllerManager.manager.image.repository | string | `"ghcr.io/grzegorzgniadek/interpolator-operator"` |  |
-| controllerManager.manager.image.tag | string | `"0.8.0"` |  |
+| controllerManager.manager.image.tag | string | `"0.9.0"` |  |
 | controllerManager.manager.imagePullPolicy | string | `"Always"` |  |
 | controllerManager.manager.resources.limits.cpu | string | `"200m"` |  |
 | controllerManager.manager.resources.limits.memory | string | `"128Mi"` |  |
