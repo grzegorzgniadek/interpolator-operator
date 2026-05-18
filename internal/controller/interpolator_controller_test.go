@@ -1,5 +1,5 @@
 /*
-Copyright 2024.
+Copyright 2026.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	interpolatorv1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
+	interpolatoriov1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
 )
 
 var _ = Describe("Interpolator Controller", func() {
@@ -40,13 +40,13 @@ var _ = Describe("Interpolator Controller", func() {
 			Name:      resourceName,
 			Namespace: "default", // TODO(user):Modify as needed
 		}
-		interpolator := &interpolatorv1.Interpolator{}
+		interpolator := &interpolatoriov1.Interpolator{}
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind Interpolator")
 			err := k8sClient.Get(ctx, typeNamespacedName, interpolator)
 			if err != nil && errors.IsNotFound(err) {
-				resource := &interpolatorv1.Interpolator{
+				resource := &interpolatoriov1.Interpolator{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
 						Namespace: "default",
@@ -59,7 +59,7 @@ var _ = Describe("Interpolator Controller", func() {
 
 		AfterEach(func() {
 			// TODO(user): Cleanup logic after each test, like removing the resource instance.
-			resource := &interpolatorv1.Interpolator{}
+			resource := &interpolatoriov1.Interpolator{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 

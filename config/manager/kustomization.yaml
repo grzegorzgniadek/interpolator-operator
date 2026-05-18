@@ -1,10 +1,8 @@
-  # [METRICS] To enable the controller manager metrics service, uncomment the following line.
 resources:
-  - manager.yaml
-  - metrics_service.yaml
+- manager.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
-  - name: controller
-    newName: ghcr.io/grzegorzgniadek/interpolator-operator
-    newTag: 0.10.0
+- name: controller
+  newName: ghcr.io/grzegorzgniadek/interpolator-operator
+  newTag: 0.11.0
