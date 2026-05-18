@@ -6,7 +6,6 @@ on:
     - 'charts/**'
     branches:
       - master
-      - dev
 
 permissions:
   contents: write

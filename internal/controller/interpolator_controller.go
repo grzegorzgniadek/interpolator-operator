@@ -1,5 +1,5 @@
 /*
-Copyright 2024.
+Copyright 2026.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,10 +31,12 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	sprig "github.com/Masterminds/sprig/v3"
@@ -62,7 +64,7 @@ type InterpolatorReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.2/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.3/pkg/reconcile
 
 const (
 	typeAvailableInterpolator = "Synced"
@@ -141,7 +143,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			secrets := &v1.Secret{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: inputsecret.Namespace, Name: inputsecret.Name}, secrets); err != nil {
 				log.Error(err, "failed to get data from secret", "name", inputsecret.Name, "namespace", inputsecret.Namespace)
-				return ctrl.Result{}, nil
+				return ctrl.Result{}, err
 			}
 			secretValues[inputsecret.Key] = string(secrets.Data[inputsecret.Key])
 			interpolator.Spec.InputSecrets[i].Value = string(secrets.Data[inputsecret.Key])
@@ -149,7 +151,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			configmaps := &v1.ConfigMap{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: inputsecret.Namespace, Name: inputsecret.Name}, configmaps); err != nil {
 				log.Error(err, "failed to get data from configmap", "name", inputsecret.Name, "namespace", inputsecret.Namespace)
-				return ctrl.Result{}, nil
+				return ctrl.Result{}, err
 			}
 			secretValues[inputsecret.Key] = configmaps.Data[inputsecret.Key]
 			interpolator.Spec.InputSecrets[i].Value = configmaps.Data[inputsecret.Key]
@@ -219,31 +221,30 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			existingSecret := &v1.Secret{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: secret.Namespace, Name: secret.Name}, existingSecret); err != nil {
 				log.Error(err, "failed to fetch existing secret", "name", secret.Name, "namespace", secret.Namespace)
-				return ctrl.Result{}, nil
+				return ctrl.Result{}, err
 			}
 			if !reflect.DeepEqual(existingSecret.Data, FinalSecrets) {
 				existingSecret.Data = FinalSecrets
-				if err := r.Update(ctx, secret); err != nil {
+				if err := r.Update(ctx, existingSecret); err != nil {
 					log.Error(err, "failed to update existing secret", "name", secret.Name, "namespace", secret.Namespace)
-					return ctrl.Result{}, nil
+					return ctrl.Result{}, err
 				}
 
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Syncing", Message: "Secret not synced with newer data"})
+				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Syncing", Message: "Secret synced with newer data"})
 				if err := r.Status().Update(ctx, interpolator); err != nil {
 					log.Error(err, "failed to update Interpolator status-Syncing")
-					return ctrl.Result{}, nil
+					return ctrl.Result{}, err
 				}
-				log.Info("updating output secret")
+				log.Info("updated output secret")
+				return ctrl.Result{}, nil
 			} else {
 				log.Info("no update needed for output secret")
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "Secret synced with newer data"})
-				if err := r.Status().Update(ctx, interpolator); err != nil {
-					log.Error(err, "failed to update Interpolator status-Synced")
-					return ctrl.Result{}, nil
-				}
-				log.Info("final secret status synced")
+				return ctrl.Result{}, nil
 			}
+		} else if err != nil {
+			return ctrl.Result{}, err
 		}
+		return ctrl.Result{}, nil
 	} else if interpolator.Spec.OutputKind == resourceTypeConfigMap {
 		configmap, _ = r.configmapForInterpolator(interpolator, FinalSecretsString)
 		err := r.Create(ctx, configmap)
@@ -252,31 +253,30 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			existingConfigMap := &v1.ConfigMap{}
 			if err := r.Get(ctx, types.NamespacedName{Namespace: configmap.Namespace, Name: configmap.Name}, existingConfigMap); err != nil {
 				log.Error(err, "failed to fetch existing configmap", "name", configmap.Name, "namespace", configmap.Namespace)
-				return ctrl.Result{}, nil
+				return ctrl.Result{}, err
 			}
 			if !reflect.DeepEqual(existingConfigMap.Data, FinalSecretsString) {
 				existingConfigMap.Data = FinalSecretsString
-				if err := r.Update(ctx, configmap); err != nil {
+				if err := r.Update(ctx, existingConfigMap); err != nil {
 					log.Error(err, "failed to update existing configmap", "name", configmap.Name, "namespace", configmap.Namespace)
-					return ctrl.Result{}, nil
-				}
-
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Syncing", Message: "ConfigMap not synced with newer data"})
-				if err := r.Status().Update(ctx, interpolator); err != nil {
-					log.Error(err, "failed to update Interpolator status-Syncing")
-					return ctrl.Result{}, nil
-				}
-				log.Info("updating output configmap")
-			} else {
-				log.Info("no update needed for output configmap")
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "ConfigMap synced with newer data"})
-				if err := r.Status().Update(ctx, interpolator); err != nil {
-					log.Error(err, "failed to update Interpolator status-Synced")
 					return ctrl.Result{}, err
 				}
-				log.Info("final configmap", "status", "synced")
+
+				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Syncing", Message: "ConfigMap synced with newer data"})
+				if err := r.Status().Update(ctx, interpolator); err != nil {
+					log.Error(err, "failed to update Interpolator status-Syncing")
+					return ctrl.Result{}, err
+				}
+				log.Info("updated output configmap")
+				return ctrl.Result{}, nil
+			} else {
+				log.Info("no update needed for output configmap")
+				return ctrl.Result{}, nil
 			}
+		} else if err != nil {
+			return ctrl.Result{}, err
 		}
+		return ctrl.Result{}, nil
 	}
 
 	log.Info("finished reconciliation for Interpolator", "NamespacedName", req.NamespacedName)
@@ -318,69 +318,115 @@ func (r *InterpolatorReconciler) doFinalizerOperationsForInterpolator(cr *interp
 	r.Recorder.Event(cr, "Warning", "Deleting", fmt.Sprintf("custom resource %s is being deleted from namespace %s", cr.Name, cr.Namespace))
 }
 
+func (r *InterpolatorReconciler) isInputResource(ctx context.Context, obj client.Object) bool {
+	interpolatorList := &interpolatorv1.InterpolatorList{}
+	listOpts := &client.ListOptions{
+		Namespace: obj.GetNamespace(), // Only check Interpolators in the same namespace
+	}
+	if err := r.List(ctx, interpolatorList, listOpts); err != nil {
+		return true // If we can't list, assume it's an input resource to be safe
+	}
+
+	for _, interpolator := range interpolatorList.Items {
+		for _, inputRes := range interpolator.Spec.InputSecrets {
+			if inputRes.Name == obj.GetName() && inputRes.Namespace == obj.GetNamespace() {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *InterpolatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	inputResourcePredicate := predicate.NewPredicateFuncs(func(obj client.Object) bool {
+		return r.isInputResource(context.Background(), obj)
+	})
+
+	// Only reconcile when the spec changes, not on status updates
+	specChangedPredicate := predicate.GenerationChangedPredicate{}
+
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&interpolatorv1.Interpolator{}).
-		Owns(&v1.Secret{}).
-		Owns(&v1.ConfigMap{}).
+		Owns(&v1.Secret{}, builder.WithPredicates(specChangedPredicate)).
+		Owns(&v1.ConfigMap{}, builder.WithPredicates(specChangedPredicate)).
 		Watches(
 			&v1.Secret{},
 			handler.EnqueueRequestsFromMapFunc(r.findObjectsForSecret),
+			builder.WithPredicates(inputResourcePredicate),
 		).
 		Watches(
 			&v1.ConfigMap{},
 			handler.EnqueueRequestsFromMapFunc(r.findObjectsForConfigMap),
+			builder.WithPredicates(inputResourcePredicate),
 		).
 		Complete(r)
 }
 
 func (r *InterpolatorReconciler) findObjectsForSecret(ctx context.Context, secret client.Object) []reconcile.Request {
 	interpolatorList := &interpolatorv1.InterpolatorList{}
-	if err := r.List(ctx, interpolatorList); err != nil {
+	listOpts := &client.ListOptions{
+		Namespace: secret.GetNamespace(), // Only check Interpolators in the same namespace
+	}
+	if err := r.List(ctx, interpolatorList, listOpts); err != nil {
 		return []reconcile.Request{}
 	}
 
-	requests := make([]reconcile.Request, 0)
+	requestMap := make(map[string]reconcile.Request) // Use map to deduplicate
 	for _, interpolator := range interpolatorList.Items {
 		for _, inputSecret := range interpolator.Spec.InputSecrets {
 			if inputSecret.Kind == resourceTypeSecret &&
 				inputSecret.Name == secret.GetName() &&
 				inputSecret.Namespace == secret.GetNamespace() {
-				requests = append(requests, reconcile.Request{
+				key := fmt.Sprintf("%s/%s", interpolator.GetNamespace(), interpolator.GetName())
+				requestMap[key] = reconcile.Request{
 					NamespacedName: types.NamespacedName{
 						Name:      interpolator.GetName(),
 						Namespace: interpolator.GetNamespace(),
 					},
-				})
+				}
 				break // No need to check other inputs if we found a match
 			}
 		}
+	}
+
+	requests := make([]reconcile.Request, 0, len(requestMap))
+	for _, req := range requestMap {
+		requests = append(requests, req)
 	}
 	return requests
 }
 
 func (r *InterpolatorReconciler) findObjectsForConfigMap(ctx context.Context, configMap client.Object) []reconcile.Request {
 	interpolatorList := &interpolatorv1.InterpolatorList{}
-	if err := r.List(ctx, interpolatorList); err != nil {
+	listOpts := &client.ListOptions{
+		Namespace: configMap.GetNamespace(), // Only check Interpolators in the same namespace
+	}
+	if err := r.List(ctx, interpolatorList, listOpts); err != nil {
 		return []reconcile.Request{}
 	}
 
-	requests := make([]reconcile.Request, 0)
+	requestMap := make(map[string]reconcile.Request) // Use map to deduplicate
 	for _, interpolator := range interpolatorList.Items {
 		for _, inputSecret := range interpolator.Spec.InputSecrets {
 			if inputSecret.Kind == resourceTypeConfigMap &&
 				inputSecret.Name == configMap.GetName() &&
 				inputSecret.Namespace == configMap.GetNamespace() {
-				requests = append(requests, reconcile.Request{
+				key := fmt.Sprintf("%s/%s", interpolator.GetNamespace(), interpolator.GetName())
+				requestMap[key] = reconcile.Request{
 					NamespacedName: types.NamespacedName{
 						Name:      interpolator.GetName(),
 						Namespace: interpolator.GetNamespace(),
 					},
-				})
-				break // No need to check other inputs if we found a match
+				}
+				break
 			}
 		}
+	}
+
+	requests := make([]reconcile.Request, 0, len(requestMap))
+	for _, req := range requestMap {
+		requests = append(requests, req)
 	}
 	return requests
 }

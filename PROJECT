@@ -2,18 +2,25 @@
 # This file is used to track the info used to scaffold your project
 # and allow the plugins properly work.
 # More info: https://book.kubebuilder.io/reference/project-config.html
-domain: interpolator.io
+cliVersion: 4.14.0
+domain: io
 layout:
 - go.kubebuilder.io/v4
+- helm.kubebuilder.io/v2-alpha
+plugins:
+  helm.kubebuilder.io/v2-alpha:
+    manifests: dist/install.yaml
+    output: charts
 projectName: interpolator-operator
-repo: interpolator.io/interpolator
+repo: github.com/grzegorzgniadek/interpolator-operator
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: interpolator.io
+  domain: io
+  group: interpolator.io
   kind: Interpolator
-  path: interpolator.io/interpolator/api/v1
+  path: github.com/grzegorzgniadek/interpolator-operator/api/v1
   version: v1
 version: "3"

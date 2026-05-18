@@ -1,5 +1,5 @@
 /*
-Copyright 2024.
+Copyright 2026.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -56,9 +56,9 @@ type InterpolatorOutputSecrets struct {
 	Value string `json:"value,omitempty"`
 }
 
-// InterpolatorStatus defines the observed state of Interpolator
+// InterpolatorStatus defines the observed state of Interpolator.
 type InterpolatorStatus struct {
-	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -69,10 +69,15 @@ type InterpolatorStatus struct {
 // Interpolator is the Schema for the interpolators API
 type Interpolator struct {
 	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
+	metav1.ObjectMeta `json:"metadata,omitzero"`
 
-	Spec   InterpolatorSpec   `json:"spec,omitempty"`
-	Status InterpolatorStatus `json:"status,omitempty"`
+	// Spec defines the desired state of Interpolator
+	// +required
+	Spec InterpolatorSpec `json:"spec"`
+
+	// Status defines the observed state of Interpolator
+	// +optional
+	Status InterpolatorStatus `json:"status,omitzero"`
 }
 
 // +kubebuilder:object:root=true
@@ -80,7 +85,7 @@ type Interpolator struct {
 // InterpolatorList contains a list of Interpolator
 type InterpolatorList struct {
 	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
+	metav1.ListMeta `json:"metadata,omitzero"`
 	Items           []Interpolator `json:"items"`
 }
 
