@@ -1,81 +1,60 @@
 # interpolator-operator
-// TODO(user): Add simple overview of use/purpose
+[![Release Container](https://github.com/grzegorzgniadek/interpolator-operator/actions/workflows/release-container.yaml/badge.svg?branch=master)](https://github.com/grzegorzgniadek/interpolator-operator/releases)
+[![Release Charts](https://github.com/grzegorzgniadek/interpolator-operator/actions/workflows/release-charts.yaml/badge.svg?branch=master)](https://github.com/grzegorzgniadek/interpolator-operator/releases)
+[![Version](https://img.shields.io/github/v/tag/grzegorzgniadek/interpolator-operator?sort=semver&label=Version&color=darkgreen)](https://github.com/grzegorzgniadek/interpolator-operator/tags)
+[![Go report card](https://goreportcard.com/badge/github.com/grzegorzgniadek/interpolator-operator)](https://goreportcard.com/report/github.com/grzegorzgniadek/interpolator-operator)
+[![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/license/apache-2-0)
 
-## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+interpolator-operator is a secret data interpolation system for Kubernetes.
 
-## Getting Started
+## Supported Kubernetes versions
 
-### Prerequisites
-- go version v1.24.6+
-- docker version 17.03+.
-- kubectl version v1.11.3+.
-- Access to a Kubernetes v1.11.3+ cluster.
+interpolator-operator has been developed for and tested with Kubernetes 1.28.
 
-### To Deploy on the cluster
-**Build and push your image to the location specified by `IMG`:**
+## How it works
 
-```sh
-make docker-build docker-push IMG=<some-registry>/interpolator-operator:tag
+When Custom resource is created, controller takes secret keys and values and creates new secret as outputSecretName
+
+
+## Architecture and components
+
+- a `Deployment` to run interpolator's controller,
+
+```bash
+$ kubectl top pods
+NAME                                               CPU(cores)   MEMORY(bytes)
+interpolator-operator-controller-manager-669d64b6cc-md889   2m           21Mi
 ```
 
-**NOTE:** This image ought to be published in the personal registry you specified.
-And it is required to have access to pull the image from the working environment.
-Make sure you have the proper permission to the registry if the above commands don’t work.
+## Installation
 
-**Install the CRDs into the cluster:**
+1. Install interpolator-operator's Helm chart from [charts](https://grzegorzgniadek.github.io/interpolator-operator) repository:
 
-```sh
-make install
+```bash
+helm upgrade --install \
+     --create-namespace --namespace interpolator-operator-system \
+     interpolator-operator interpolator-operator \
+     --repo https://grzegorzgniadek.github.io/interpolator-operator/
 ```
 
-**Deploy the Manager to the cluster with the image specified by `IMG`:**
+## Installation with plain YAML files
 
-```sh
-make deploy IMG=<some-registry>/interpolator-operator:tag
+1. You can use Helm to generate plain YAML files and then deploy these YAML files with `kubectl apply` or whatever you want:
+
+```bash
+helm template --namespace interpolator-operator-system \
+     interpolator-operator interpolator-operator \
+     --repo https://grzegorzgniadek.github.io/interpolator-operator/ \
+     > /tmp/interpolator.yaml
+kubectl create namespace interpolator-operator-system
+kubectl apply -f /tmp/interpolator.yaml --namespace interpolator-operator-system
 ```
 
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
-
-**Create instances of your solution**
-You can apply the samples (examples) from the config/sample:
+2. You can use bundled yaml files from dist directory
+Build the installer for the image built and published in the registry:
 
 ```sh
-kubectl apply -k config/samples/
-```
-
->**NOTE**: Ensure that the samples has default values to test it out.
-
-### To Uninstall
-**Delete the instances (CRs) from the cluster:**
-
-```sh
-kubectl delete -k config/samples/
-```
-
-**Delete the APIs(CRDs) from the cluster:**
-
-```sh
-make uninstall
-```
-
-**UnDeploy the controller from the cluster:**
-
-```sh
-make undeploy
-```
-
-## Project Distribution
-
-Following the options to release and provide this solution to the users.
-
-### By providing a bundle with all YAML files
-
-1. Build the installer for the image built and published in the registry:
-
-```sh
-make build-installer IMG=<some-registry>/interpolator-operator:tag
+make build-installer
 ```
 
 **NOTE:** The makefile target mentioned above generates an 'install.yaml'
@@ -83,53 +62,48 @@ file in the dist directory. This file contains all the resources built
 with Kustomize, which are necessary to install this project without its
 dependencies.
 
-2. Using the installer
+1. Using the installer
 
-Users can just run 'kubectl apply -f <URL for YAML BUNDLE>' to install
-the project, i.e.:
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/<org>/interpolator-operator/<tag or branch>/dist/install.yaml
+```bash
+kubectl apply -f dist/install.yaml
 ```
 
-### By providing a Helm Chart
+## Configuration and customization
 
-1. Build the chart using the optional helm plugin
+You can see the full list of parameters (along with their meaning and default values) in the chart's [values.yaml](https://github.com/grzegorzgniadek/interpolator-operator/blob/master/charts/interpolator/values.yaml) file.
 
-```sh
-kubebuilder edit --plugins=helm/v2-alpha
+
+#### Customize resources
+
+```bash
+helm upgrade --install \
+     --create-namespace --namespace interpolator-operator-system  \
+     interpolator-operator interpolator-operator \
+     --repo https://grzegorzgniadek.github.io/interpolator-operator/ \
+     --set controllerManager.manager.resources.limits.cpu=200m
 ```
 
-2. See that a chart was generated under 'dist/chart', and users
-can obtain this solution from there.
+#### Turn on Prometheus Service Monitor(Metrics)
 
-**NOTE:** If you change the project, you need to update the Helm Chart
-using the same command above to sync the latest changes. Furthermore,
-if you create webhooks, you need to use the above command with
-the '--force' flag and manually ensure that any custom configuration
-previously added to 'dist/chart/values.yaml' or 'dist/chart/manager/manager.yaml'
-is manually re-applied afterwards.
+```bash
+helm install \
+     --create-namespace --namespace interpolator-operator-system  \
+     interpolator-operator interpolator-operator \
+     --repo https://grzegorzgniadek.github.io/interpolator-operator/ \
+     --set prometheusCRDS.enabled=true \
+     --set prometheusMonitor.enabled=true \
+     --set prometheusMonitor.interval=15s
+```
 
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
-
-**NOTE:** Run `make help` for more information on all potential `make` targets
-
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
-
-## License
-
-Copyright 2026.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
+## Use sample resource
+```bash
+kubectl apply -f https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/dummy-resources.yaml
+```
+If we want to create ConfigMap as result interpolated resource
+```bash
+kubectl apply -f https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/inter_v1_interpolator1-configmap.yaml
+```
+If we want to create Secret as result interpolated resource
+```bash
+kubectl apply -f https://raw.githubusercontent.com/grzegorzgniadek/interpolator-operator/master/config/samples/inter_v1_interpolator2-secret.yaml
+```
