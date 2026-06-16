@@ -56,7 +56,7 @@ generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and
 
 .PHONY: generate-helm
 generate-helm: ## Generate Helm chart for the operator.
-	kubebuilder edit --plugins=helm/v2-alpha --output-dir=charts
+	kubebuilder edit --plugins=helm/v2-alpha --output-dir=charts --chart-name=interpolator-operator
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
@@ -287,7 +287,7 @@ HELM_NAMESPACE ?= interpolator-operator-system
 ## Name of the Helm release
 HELM_RELEASE ?= interpolator-operator
 ## Path to the Helm chart directory
-HELM_CHART_DIR ?= charts/interpolator
+HELM_CHART_DIR ?= charts/interpolator-operator
 ## Additional arguments to pass to helm commands
 HELM_EXTRA_ARGS ?=
 
@@ -330,7 +330,7 @@ helm-rollback: ## Rollback to previous Helm release.
 .PHONY: release
 release: generate manifests build-installer ## Release a new version of the operator. Specify an image with IMG and tag with TAG.
 	@echo "Releasing version ${TAG} with image ${IMG}..."
-	TAG=$(TAG) yq -i '.appVersion = strenv(TAG)' charts/interpolator/Chart.yaml
-	TAG=$(TAG) yq -i '.version = strenv(TAG)' charts/interpolator/Chart.yaml
-	TAG=$(TAG) yq -i '.manager.image.tag = strenv(TAG)' charts/interpolator/values.yaml
+	TAG=$(TAG) yq -i '.appVersion = strenv(TAG)' charts/interpolator-operator/Chart.yaml
+	TAG=$(TAG) yq -i '.version = strenv(TAG)' charts/interpolator-operator/Chart.yaml
+	TAG=$(TAG) yq -i '.manager.image.tag = strenv(TAG)' charts/interpolator-operator/values.yaml
 	$(MAKE) helm-docs-generate

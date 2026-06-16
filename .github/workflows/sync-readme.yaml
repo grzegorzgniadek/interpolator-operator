@@ -3,9 +3,9 @@ name: Sync Readme
 on:
   push:
     branches:
-      - master
+    - master
     paths:
-      - 'README.md'
+    - 'README.md'
 
 jobs:
   build:
