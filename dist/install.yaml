@@ -468,7 +468,7 @@ spec:
         - --health-probe-bind-address=:8081
         command:
         - /manager
-        image: ghcr.io/grzegorzgniadek/interpolator-operator:0.11.0
+        image: ghcr.io/grzegorzgniadek/interpolator-operator:0.12.0
         livenessProbe:
           httpGet:
             path: /healthz

@@ -17,7 +17,7 @@ manager:
     repository: ghcr.io/grzegorzgniadek/interpolator-operator
     ## Image tag (defaults to Chart.appVersion if not set)
     ##
-    tag: "0.11.0"
+    tag: "0.12.0"
     pullPolicy: IfNotPresent
   ## Arguments
   ##
@@ -82,16 +82,16 @@ manager:
   ## Custom Deployment labels
   ##
   # labels: {}
-## Custom Deployment annotations
-##
-# annotations: {}
 
-## Custom Pod labels and annotations
-##
-# pod:
-#   labels: {}
-#   annotations: {}
+  ## Custom Deployment annotations
+  ##
+  # annotations: {}
 
+  ## Custom Pod labels and annotations
+  ##
+  # pod:
+  #   labels: {}
+  #   annotations: {}
 ## RBAC configuration
 ##
 rbac:
@@ -115,21 +115,21 @@ serviceAccount:
   ## Note: When enable=true, respects nameOverride/fullnameOverride
   ##
   # name: ""
-## Custom ServiceAccount annotations
-##
-# annotations: {}
 
-## Custom ServiceAccount labels
-##
-# labels: {}
+  ## Custom ServiceAccount annotations
+  ##
+  # annotations: {}
 
+  ## Custom ServiceAccount labels
+  ##
+  # labels: {}
 ## Custom Resource Definitions
 ##
 crd:
   # Install CRDs with the chart
   enable: true
   # Keep CRDs when uninstalling
-  keep: false
+  keep: true
 ## Controller metrics endpoint.
 ## Enable to expose /metrics endpoint
 ##

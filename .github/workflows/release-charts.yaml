@@ -5,7 +5,7 @@ on:
     paths:
     - 'charts/**'
     branches:
-      - master
+    - master
 
 permissions:
   contents: write

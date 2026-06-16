@@ -9,6 +9,7 @@ layout:
 - helm.kubebuilder.io/v2-alpha
 plugins:
   helm.kubebuilder.io/v2-alpha:
+    chartName: interpolator-operator
     manifests: dist/install.yaml
     output: charts
 projectName: interpolator-operator
