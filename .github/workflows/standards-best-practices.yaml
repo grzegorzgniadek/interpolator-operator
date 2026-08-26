@@ -108,7 +108,7 @@ jobs:
             ].filter(Boolean).join(' . ');
 
             const body = `${marker}\n### Vulnerability Scan Results\n\n` +
-              `**{vulns.length}** unique vulnerabilities found.\n\n` +
+              `**${vulns.length}** unique vulnerabilities found.\n\n` +
               `> Only showing vulnerabilities with severity >= High.\n\n` +
               buildSection('Critical Vulnerabilities', '🔴', critical) +
               buildSection('High Vulnerabilities', '🟠', high) +
