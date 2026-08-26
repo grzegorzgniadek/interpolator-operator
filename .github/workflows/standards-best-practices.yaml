@@ -7,14 +7,6 @@ on:
       - master
   pull_request:
   
-  workflow_call:
-    inputs:
-      grype-scan-path:
-        type: string
-        description: "Path to the directory to scan with Grype"
-        default: "."
-        required: false
-
 jobs:
   vulnerability-scan:
     name: Vulnerability Scan
@@ -29,11 +21,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
 
       - name: Prepare scan target
-        if: inputs.grype-scan-path != '.'
         id: scan-target
         run: |
           mkdir -p /tmp/grype-scan-target
-          cp "${{ inputs.grype-scan-path }}" /tmp/grype-scan-target/
+          cp "." /tmp/grype-scan-target/
           echo "path=/tmp/grype-scan-target" >> "$GITHUB_OUTPUT"
       
       - name: Run Anchore vulnerability scan
