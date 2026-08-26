@@ -3,7 +3,6 @@ name: "Best Practices"
 on:
   push:
     branches:
-      - main
       - master
   pull_request:
   
@@ -76,7 +75,7 @@ jobs:
               const score = parseFloat(rule.properties?.['security-severity'] || '0');
               if (score < 7.0) continue; // Filter out low severity vulnerabilities
               const desc = rule.shortDescription?.text || result.ruleId;
-              const fix = rule.help?.text || 'N/A;
+              const fix = rule.help?.text || 'N/A';
               const fixVersion = fix.match(/fixed in (.+?)[\s.]*$/i)?.[1] || fix.substring(0,80);
               const label = score >= 9.0 ? 'Critical' : 'High';
               vulns.push({score, label, desc, id: result.ruleId, fixVersion});
@@ -117,7 +116,7 @@ jobs:
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number
+              issue_number: context.issue.number,
             });
 
             const existing = comments.find(c => c.body.includes(marker));
