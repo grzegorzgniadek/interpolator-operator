@@ -44,6 +44,7 @@ jobs:
           script: |
             const fs = require('fs');
             const sarifFile = '${{ steps.anchore-scan.outputs.sarif }}';
+            const repoName = '${{ github.repository }}';
             let sarif;
             try {
               sarif = JSON.parse(fs.readFileSync(sarifFile, 'utf8'));
@@ -112,7 +113,7 @@ jobs:
               `> Only showing vulnerabilities with severity >= High.\n\n` +
               buildSection('Critical Vulnerabilities', '🔴', critical) +
               buildSection('High Vulnerabilities', '🟠', high) +
-              `Scan powered by [Anchore Grype](https://github.com/anchore/grype) Full results can be found in the [Security tab](https://github.com/${github.repository}/security)`;
+              `Scan powered by [Anchore Grype](https://github.com/anchore/grype) Full results can be found in the [Security tab](https://github.com/${repoName}/security)`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
