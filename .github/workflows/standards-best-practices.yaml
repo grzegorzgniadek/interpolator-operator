@@ -20,19 +20,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
 
-      - name: Prepare scan target
-        id: scan-target
-        run: |
-          mkdir -p /tmp/grype-scan-target
-          cp "." /tmp/grype-scan-target/
-          echo "path=/tmp/grype-scan-target" >> "$GITHUB_OUTPUT"
-      
       - name: Run Anchore vulnerability scan
         uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2 #v7.4.0
         id: anchore-scan
         continue-on-error: true
         with:
-          path: ${{ steps.scan-target.outputs.path || '.'}}
+          path: "."
           fail-build: false
           severity-cutoff: "high"
           only-fixed: true
