@@ -37,7 +37,7 @@ jobs:
           echo "path=/tmp/grype-scan-target" >> "$GITHUB_OUTPUT"
       
       - name: Run Anchore vulnerability scan
-        uses: anchore/grype-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2 #v7.4.0
+        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2 #v7.4.0
         id: anchore-scan
         continue-on-error: true
         with:
