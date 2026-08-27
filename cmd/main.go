@@ -181,7 +181,7 @@ func main() {
 	if err := (&controller.InterpolatorReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
-		Recorder: mgr.GetEventRecorderFor("interpolator-controller"),
+		Recorder: mgr.GetEventRecorder("interpolator-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "interpolator")
 		os.Exit(1)

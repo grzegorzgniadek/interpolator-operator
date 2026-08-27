@@ -27,9 +27,9 @@ type InterpolatorSpec struct {
 	// Type of Output resource, Can be ConfigMap or Secret
 	// +kubebuilder:validation:Enum=ConfigMap;Secret
 	OutputKind string `json:"outputKind"`
-	//Output secret array of structs
+	// Output secret array of structs
 	OutputSecrets []InterpolatorOutputSecrets `json:"outputSecrets,omitempty"`
-	//Input secret array of structs
+	// Input secret array of structs
 	InputSecrets []InterpolatorInputSecrets `json:"inputSecrets"`
 }
 
@@ -58,12 +58,13 @@ type InterpolatorOutputSecrets struct {
 
 // InterpolatorStatus defines the observed state of Interpolator.
 type InterpolatorStatus struct {
-	Conditions []metav1.Condition `json:"conditions,omitempty"`
+	Conditions     []metav1.Condition `json:"conditions,omitempty"`
+	LastSyncedTime *metav1.Time       `json:"lastSyncedTime,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:name="Last Update",type="date",JSONPath=".status.conditions[?(@.status==\"True\")].lastTransitionTime"
+// +kubebuilder:printcolumn:name="Last Update",type="date",JSONPath=".status.lastSyncedTime"
 // +kubebuilder:printcolumn:name="Synced",type="string",JSONPath=".status.conditions[?(@.status==\"True\")].status"
 // +kubebuilder:resource:shortName={"inter"}
 // Interpolator is the Schema for the interpolators API
