@@ -45,17 +45,10 @@ linters:
           - dupl
           - lll
         path: internal/*
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+      - linters:
+          - gocyclo
+        path: internal/controller/*
 formatters:
   enable:
     - gofmt
     - goimports
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$

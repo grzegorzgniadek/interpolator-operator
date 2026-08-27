@@ -68,11 +68,11 @@ type InterpolatorReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.3/pkg/reconcile
 
 const (
-	typeAvailableInterpolator = "Synced"
-	typeDegradedInterpolator  = "Degraded"
-	interpolatorFinalizer     = "interpolator.interpolator.io/finalizer"
-	resourceTypeSecret        = "Secret"
-	resourceTypeConfigMap     = "ConfigMap"
+	typeSyncedInterpolator   = "Synced"
+	typeDegradedInterpolator = "Degraded"
+	interpolatorFinalizer    = "interpolator.interpolator.io/finalizer"
+	resourceTypeSecret       = "Secret"
+	resourceTypeConfigMap    = "ConfigMap"
 )
 
 func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -235,7 +235,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 					return ctrl.Result{}, err
 				}
 
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "Secret synced with newer data", LastTransitionTime: metav1.Now()})
+				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeSyncedInterpolator, Status: metav1.ConditionTrue, Reason: typeSyncedInterpolator, Message: "Secret synced with newer data", LastTransitionTime: metav1.Now()})
 				interpolator.Status.LastSyncedTime = &now
 				if err := r.Status().Update(ctx, interpolator); err != nil {
 					logger.Error(err, "failed to update Interpolator status-Synced")
@@ -244,7 +244,8 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 				logger.Info("updated output secret")
 			} else {
 				logger.Info("no update needed for output secret")
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "Secret synced with newer data", LastTransitionTime: metav1.Now()})
+
+				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeSyncedInterpolator, Status: metav1.ConditionTrue, Reason: typeSyncedInterpolator, Message: "Secret synced with newer data", LastTransitionTime: metav1.Now()})
 				interpolator.Status.LastSyncedTime = &now
 				if err := r.Status().Update(ctx, interpolator); err != nil {
 					logger.Error(err, "failed to update Interpolator status-Synced")
@@ -271,7 +272,7 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 					return ctrl.Result{}, err
 				}
 
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "ConfigMap synced with newer data", LastTransitionTime: metav1.Now()})
+				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeSyncedInterpolator, Status: metav1.ConditionTrue, Reason: typeSyncedInterpolator, Message: "ConfigMap synced with newer data", LastTransitionTime: metav1.Now()})
 				interpolator.Status.LastSyncedTime = &now
 				if err := r.Status().Update(ctx, interpolator); err != nil {
 					logger.Error(err, "failed to update Interpolator status-Synced")
@@ -280,7 +281,8 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 				logger.Info("updated output configmap")
 			} else {
 				logger.Info("no update needed for output configmap")
-				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeAvailableInterpolator, Status: metav1.ConditionTrue, Reason: "Synced", Message: "ConfigMap synced with newer data", LastTransitionTime: metav1.Now()})
+
+				meta.SetStatusCondition(&interpolator.Status.Conditions, metav1.Condition{Type: typeSyncedInterpolator, Status: metav1.ConditionTrue, Reason: typeSyncedInterpolator, Message: "ConfigMap synced with newer data", LastTransitionTime: metav1.Now()})
 				interpolator.Status.LastSyncedTime = &now
 				if err := r.Status().Update(ctx, interpolator); err != nil {
 					logger.Error(err, "failed to update Interpolator status-Synced")
@@ -292,7 +294,6 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		}
 	}
 
-	r.Recorder.Eventf(interpolator, nil, "Normal", "Synced", "Synced", "custom resource %s is synced", req.Name)
 	logger.Info("finished reconciliation for Interpolator", "NamespacedName", req.NamespacedName)
 	return ctrl.Result{}, nil
 }

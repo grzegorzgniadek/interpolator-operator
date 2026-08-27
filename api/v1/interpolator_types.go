@@ -18,6 +18,7 @@ package v1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 // InterpolatorSpec defines the desired state of Interpolator
@@ -91,5 +92,8 @@ type InterpolatorList struct {
 }
 
 func init() {
-	SchemeBuilder.Register(&Interpolator{}, &InterpolatorList{})
+	SchemeBuilder.Register(func(s *runtime.Scheme) error {
+		s.AddKnownTypes(SchemeGroupVersion, &Interpolator{}, &InterpolatorList{})
+		return nil
+	})
 }
