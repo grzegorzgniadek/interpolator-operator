@@ -4,11 +4,22 @@
     "config:recommended"
   ],
   "timezone": "Europe/Warsaw",
-  "assignees" : [
-    "grzegorzgniadek"
+  "assignees": [
+    "myaccount"
   ],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "schedule": ["* 18-21 * * *"]
+  "schedule": ["* 18-21 * * *"],
+  "postUpdateOptions": [
+    "gomodTidy",
+    "gomodUpdateImportPaths"
+  ],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "packageRules": [
+    {
+      "description": "All Go module updates in one PR",
+      "matchManagers": ["gomod"],
+      "groupName": "go dependencies"
+    }
+  ]
 }
