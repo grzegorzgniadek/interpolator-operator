@@ -68,41 +68,9 @@ jobs:
           fi
 
           echo "$NEW" > VERSION
+          make release
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add VERSION
           git commit -m "chore: set version to $NEW"
           git push origin "HEAD:${HEAD_REF}"
-
-  tag:
-    if: github.event.action == 'closed' && github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
-          fetch-depth: 0
-
-      - name: Tag release if new
-        run: |
-          set -euo pipefail
-
-          if [ ! -f VERSION ]; then
-            echo "No VERSION file, nothing to tag"
-            exit 0
-          fi
-
-          TAG="v$(tr -d '[:space:]' < VERSION)"
-
-          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            echo "Tag $TAG already exists, nothing to release"
-            exit 0
-          fi
-
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Release $TAG"
-          git push origin "$TAG"
-          echo "Released $TAG"
