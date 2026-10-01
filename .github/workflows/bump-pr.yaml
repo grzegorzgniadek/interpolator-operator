@@ -65,7 +65,6 @@ jobs:
 
           if [ "$NEW" = "$CURRENT" ]; then
             echo "VERSION already $NEW, nothing to do"
-            exit 0
           else
             echo "Updating VERSION to $NEW"
             echo "$NEW" > VERSION
