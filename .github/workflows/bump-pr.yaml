@@ -62,7 +62,6 @@ jobs:
 
           echo "Latest tag: $LATEST | PR title: $TITLE | VERSION: ${CURRENT:-<none>} -> $NEW"
 
-
           if [ "$NEW" = "$CURRENT" ]; then
             echo "VERSION already $NEW, nothing to do"
           else
