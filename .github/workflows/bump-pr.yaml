@@ -80,4 +80,5 @@ jobs:
             git push origin "HEAD:${HEAD_REF}"
           else
             echo "Working tree clean"
+            exit 0
           fi
