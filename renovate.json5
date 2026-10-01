@@ -5,7 +5,7 @@
   ],
   "timezone": "Europe/Warsaw",
   "assignees": [
-    "myaccount"
+    "grzegorzgniadek"
   ],
   "schedule": ["* 18-21 * * *"],
   "postUpdateOptions": [
