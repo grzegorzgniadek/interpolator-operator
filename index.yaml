@@ -295,6 +295,21 @@ entries:
   - annotations:
       kubebuilder.io/generated-by: kubebuilder
     apiVersion: v2
+    appVersion: 0.15.0
+    created: "2026-10-03T04:55:18.725745784Z"
+    description: A Helm chart to distribute interpolator-operator
+    digest: 805630a0c7f3b4d603c3a1fb32e3e9cc1acd9e86df37e527c64a32e6d74983ed
+    keywords:
+    - kubernetes
+    - operator
+    name: interpolator-operator
+    type: application
+    urls:
+    - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.15.0/interpolator-operator-0.15.0.tgz
+    version: 0.15.0
+  - annotations:
+      kubebuilder.io/generated-by: kubebuilder
+    apiVersion: v2
     appVersion: 0.14.1
     created: "2026-10-01T03:16:11.110811493Z"
     description: A Helm chart to distribute interpolator-operator
@@ -367,4 +382,4 @@ entries:
     urls:
     - https://github.com/grzegorzgniadek/interpolator-operator/releases/download/interpolator-0.11.0/interpolator-operator-0.11.0.tgz
     version: 0.11.0
-generated: "2026-10-01T03:16:11.111073682Z"
+generated: "2026-10-03T04:55:18.72581311Z"
