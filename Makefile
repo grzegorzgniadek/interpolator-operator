@@ -153,7 +153,7 @@ setup-test-e2e: ## Set up a Kind cluster for e2e tests if it does not exist
 E2E_LABEL_FILTER ?=
 
 .PHONY: test-e2e
-test-e2e: setup-test-e2e manifests generate generate-helm fmt vet install-helm ## Run the e2e tests. Expected an isolated environment using Kind.
+test-e2e: setup-test-e2e install-helm ## Run the e2e tests. Expected an isolated environment using Kind.
 	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) HELM=$(HELM) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter="$(E2E_LABEL_FILTER)"
 	$(MAKE) cleanup-test-e2e
 
