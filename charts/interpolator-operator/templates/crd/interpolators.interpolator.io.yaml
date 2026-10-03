@@ -20,7 +20,7 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .status.conditions[?(@.status=="True")].lastTransitionTime
+    - jsonPath: .status.lastSyncedTime
       name: Last Update
       type: date
     - jsonPath: .status.conditions[?(@.status=="True")].status
@@ -164,6 +164,9 @@ spec:
                   - type
                   type: object
                 type: array
+              lastSyncedTime:
+                format: date-time
+                type: string
             type: object
         required:
         - metadata
