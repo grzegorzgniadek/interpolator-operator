@@ -3,6 +3,10 @@ TAG=$(shell cat VERSION)
 REPOSITORY ?= ghcr.io/grzegorzgniadek/interpolator-operator
 IMG ?= ${REPOSITORY}:$(TAG)
 
+# Go Version from go.mod file to use for installing tools. This is used to ensure that the correct version of Go is used when installing tools, regardless of the version of Go installed on the system.
+GO_VERSION := $(shell go list -m -f '{{.GoVersion}}')
+export GOTOOLCHAIN := go$(GO_VERSION)
+
 # YEAR defines the year value used for substituting the YEAR placeholder in the boilerplate header.
 YEAR ?= $(shell date +%Y)
 
@@ -219,7 +223,7 @@ ENVTEST_K8S_VERSION ?= $(shell v='$(call gomodver,k8s.io/api)'; \
   [ -n "$$v" ] || { echo "Set ENVTEST_K8S_VERSION manually (k8s.io/api replace has no tag)" >&2; exit 1; }; \
   printf '%s\n' "$$v" | sed -E 's/^v?[0-9]+\.([0-9]+).*/1.\1/')
 
-GOLANGCI_LINT_VERSION ?= v2.13.1
+GOLANGCI_LINT_VERSION ?= v2.14.0
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
 $(KUSTOMIZE): $(LOCALBIN)
@@ -279,7 +283,7 @@ HELMDOCS ?= $(LOCALBIN)/helm-docs
 
 .PHONY: helm-docs
 helm-docs-install: $(HELMDOCS) ##Install latest helm-docs binary
-$(HELMDOCS): $(LOCALBIN) 
+$(HELMDOCS): $(LOCALBIN)
 	test -s $(LOCALBIN)/helm-docs || GOBIN=$(LOCALBIN) go install github.com/norwoodj/helm-docs/cmd/helm-docs@latest
 
 .PHONY: helm-docs-generate
