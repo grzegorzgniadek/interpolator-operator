@@ -301,12 +301,10 @@ func (r *InterpolatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 func (r *InterpolatorReconciler) secretForInterpolator(interpolator *interpolatorv1.Interpolator, rmap map[string][]byte) (*v1.Secret, error) {
 
 	secret := &v1.Secret{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      interpolator.Spec.OutputName,
-			Namespace: interpolator.Namespace,
-		},
-		Data: rmap,
-		Type: "Opaque",
+		Name:      interpolator.Spec.OutputName,
+		Namespace: interpolator.Namespace,
+		Data:      rmap,
+		Type:      "Opaque",
 	}
 	if err := ctrl.SetControllerReference(interpolator, secret, r.Scheme); err != nil {
 		return nil, err
@@ -317,11 +315,9 @@ func (r *InterpolatorReconciler) secretForInterpolator(interpolator *interpolato
 func (r *InterpolatorReconciler) configmapForInterpolator(interpolator *interpolatorv1.Interpolator, rmap map[string]string) (*v1.ConfigMap, error) {
 
 	configmap := &v1.ConfigMap{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      interpolator.Spec.OutputName,
-			Namespace: interpolator.Namespace,
-		},
-		Data: rmap,
+		Name:      interpolator.Spec.OutputName,
+		Namespace: interpolator.Namespace,
+		Data:      rmap,
 	}
 	if err := ctrl.SetControllerReference(interpolator, configmap, r.Scheme); err != nil {
 		return nil, err
@@ -395,10 +391,8 @@ func (r *InterpolatorReconciler) findObjectsForSecret(ctx context.Context, secre
 				inputSecret.Namespace == secret.GetNamespace() {
 				key := fmt.Sprintf("%s/%s", interpolator.GetNamespace(), interpolator.GetName())
 				requestMap[key] = reconcile.Request{
-					NamespacedName: types.NamespacedName{
-						Name:      interpolator.GetName(),
-						Namespace: interpolator.GetNamespace(),
-					},
+					Name:      interpolator.GetName(),
+					Namespace: interpolator.GetNamespace(),
 				}
 				break // No need to check other inputs if we found a match
 			}
@@ -429,10 +423,8 @@ func (r *InterpolatorReconciler) findObjectsForConfigMap(ctx context.Context, co
 				inputSecret.Namespace == configMap.GetNamespace() {
 				key := fmt.Sprintf("%s/%s", interpolator.GetNamespace(), interpolator.GetName())
 				requestMap[key] = reconcile.Request{
-					NamespacedName: types.NamespacedName{
-						Name:      interpolator.GetName(),
-						Namespace: interpolator.GetNamespace(),
-					},
+					Name:      interpolator.GetName(),
+					Namespace: interpolator.GetNamespace(),
 				}
 				break
 			}
