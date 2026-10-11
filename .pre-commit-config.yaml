@@ -15,5 +15,11 @@ repos:
         args:
           - --chart-search-root=charts
           - --template-files=charts/_templates.gotmpl
-
-    
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: debug-statements
+      - id: double-quote-string-fixer
