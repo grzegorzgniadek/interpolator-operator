@@ -25,8 +25,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	interpolatoriov1 "github.com/grzegorzgniadek/interpolator-operator/api/v1"
 )
 
@@ -47,10 +45,8 @@ var _ = Describe("Interpolator Controller", func() {
 			err := k8sClient.Get(ctx, typeNamespacedName, interpolator)
 			if err != nil && errors.IsNotFound(err) {
 				resource := &interpolatoriov1.Interpolator{
-					ObjectMeta: metav1.ObjectMeta{
-						Name:      resourceName,
-						Namespace: "default",
-					},
+					Name:      resourceName,
+					Namespace: "default",
 					// TODO(user): Specify other spec details if needed.
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
