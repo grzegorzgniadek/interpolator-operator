@@ -2,8 +2,8 @@ apiVersion: v2
 name: interpolator-operator
 description: A Helm chart to distribute interpolator-operator
 type: application
-version: 0.15.4
-appVersion: "0.15.4"
+version: 0.15.5
+appVersion: "0.15.5"
 keywords:
   - kubernetes
   - operator
