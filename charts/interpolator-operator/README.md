@@ -1,6 +1,6 @@
 # interpolator-operator
 
-![Version: 0.15.5](https://img.shields.io/badge/Version-0.15.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.5](https://img.shields.io/badge/AppVersion-0.15.5-informational?style=flat-square)
+![Version: 0.15.6](https://img.shields.io/badge/Version-0.15.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.6](https://img.shields.io/badge/AppVersion-0.15.6-informational?style=flat-square)
 
 A Helm chart to distribute interpolator-operator
 
@@ -16,7 +16,7 @@ A Helm chart to distribute interpolator-operator
 | manager.enabled | bool | `true` |  |
 | manager.image.pullPolicy | string | `"IfNotPresent"` |  |
 | manager.image.repository | string | `"ghcr.io/grzegorzgniadek/interpolator-operator"` |  |
-| manager.image.tag | string | `"0.15.5"` |  |
+| manager.image.tag | string | `"0.15.6"` |  |
 | manager.nodeSelector | object | `{}` |  |
 | manager.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | manager.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |

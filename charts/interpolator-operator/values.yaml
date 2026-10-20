@@ -17,7 +17,7 @@ manager:
     repository: ghcr.io/grzegorzgniadek/interpolator-operator
     ## Image tag (defaults to Chart.appVersion if not set)
     ##
-    tag: "0.15.5"
+    tag: "0.15.6"
     pullPolicy: IfNotPresent
   ## Arguments
   ##
